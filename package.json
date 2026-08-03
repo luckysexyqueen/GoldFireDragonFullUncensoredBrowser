@@ -1,0 +1,33 @@
+{
+  "name": "goldfiredragonuncensoredbrowser-9bhrqx-9bhrqx-7493-20260802-main",
+  "version": "1.3.5",
+  "description": "From Idea to Profit with OnSpace",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@scelar/nodepod": "^1.9.12",
+    "@supabase/server": "^1.4.1",
+    "almostnode": "^0.2.14",
+    "axios": "^1.19.0",
+    "capsolver": "^1.0.1",
+    "cheerio": "^1.2.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "git": "^0.1.5",
+    "google-search-ts": "^1.0.1",
+    "googlethis": "^1.8.0",
+    "open": "^11.0.0",
+    "puppeteer": "^25.4.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-recaptcha": "^3.6.8",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
