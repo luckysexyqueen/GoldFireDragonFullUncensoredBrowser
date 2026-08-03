@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "build": "echo \"No build step required\""
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +24,7 @@
     "git": "^0.1.5",
     "google-search-ts": "^1.0.1",
     "googlethis": "^1.8.0",
+    "metassium": "github:webaverse/metachromium-bin",
     "open": "^11.0.0",
     "puppeteer": "^25.4.0",
     "puppeteer-extra": "^3.3.6",
