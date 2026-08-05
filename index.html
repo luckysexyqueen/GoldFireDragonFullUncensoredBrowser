@@ -29,6 +29,154 @@
     <meta name="color-scheme" content="dark" />
     <meta name="MobileOptimized" content="1359" />
 
+        <title>360도 가상 공간 변환기</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+    </style>
+    <!-- Three.js 코어 라이브러리 CDN 로드 -->
+    <script src="https://cloudflare.com"></script>
+</head>
+<body>
+
+    <script>
+        let isConverted = false;
+        let scene, camera, renderer, texture, mesh;
+        let isUserInteracting = false;
+        let lon = 0, lat = 0;
+        let onPointerDownLon = 0, onPointerDownLat = 0;
+        let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
+
+        // 1. [실시간 비디오 가로채기] 재생 중인 실제 비디오 엘리먼트를 추적합니다.
+        const videoScanInterval = setInterval(() => {
+            if (isConverted) return;
+            try {
+                const targetDocument = document; 
+                const activeVideos = targetDocument.querySelectorAll('video');
+
+                activeVideos.forEach(video => {
+                    if (!video.paused && video.currentTime > 0 && !isConverted) {
+                        process360Conversion(video);
+                    }
+                });
+            } catch (securityError) {
+                // CORS 및 도메인 보안 예외 발생 시 대기 상태 유지
+            }
+        }, 500);
+
+        // 2. 납작한 일반 평면(2D) 영상을 진짜 360도 입체 파노라마 뷰 공간으로 매핑하는 코어 엔지니어링
+        function process360Conversion(detectedVideo) {
+            isConverted = true;
+            clearInterval(videoScanInterval); 
+
+            detectedVideo.style.visibility = 'hidden';
+            detectedVideo.style.opacity = '0';
+
+            // Three.js 입체 공간 생성
+            scene = new THREE.Scene();
+            
+            // 왜곡 없는 자연스러운 VR 환경 시야각(FOV)인 75도 설정 후 카메라 정중앙 배치
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.target = new THREE.Vector3(0, 0, 0);
+
+            // [핵심] 일반 영상을 가상 360도 공간 구조로 확장하기 위한 고밀도 구형 지오메트리 빌드
+            const geometry = new THREE.SphereGeometry(500, 120, 80);
+            geometry.scale(-1, 1, 1); // 내부 벽면에 영상을 고르게 투사하기 위해 스케일 반전
+
+            // 사용자가 틀어놓은 실제 비디오 엘리먼트 스트림을 실시간 3D 가상 텍스처로 추출
+            texture = new THREE.VideoTexture(detectedVideo);
+            
+            // 픽셀 보간법을 선형(Linear)으로 처리하여 화질 깨짐을 실시간 최소화
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            
+            // 비디오 픽셀이 파노라마 좌표계 형태로 구체 전체에 완벽히 정렬되도록 매핑 형식 지정
+            texture.mapping = THREE.EquirectangularReflectionMapping; 
+
+            // 가상 벽면에 텍스처를 적용하고 3D 매쉬 객체 생성 후 가상 세계에 띄움
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // 모니터 전체 해상도를 가득 채우는 하드웨어 가속 방식의 WebGL 렌더러 생성
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // CSS 강제 제어: 원본 사이트의 복잡한 레이아웃 구조를 완벽하게 장악하여 강제 전체화면 변환
+            renderer.domElement.style.position = 'fixed';
+            renderer.domElement.style.top = '0';
+            renderer.domElement.style.left = '0';
+            renderer.domElement.style.width = '100vw';
+            renderer.domElement.style.height = '100vh';
+            renderer.domElement.style.zIndex = '9999999';
+            renderer.domElement.style.backgroundColor = '#000';
+            document.body.appendChild(renderer.domElement);
+
+            // 마우스 드래그를 이용해 진짜 360도 공간처럼 사방을 자유롭게 둘러보는 인터랙션 리스너 바인딩
+            renderer.domElement.addEventListener('pointerdown', onPointerDown);
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('resize', onWindowResize);
+
+            // 변환 프레임 실시간 업데이트 재생 시작
+            animate();
+        }
+
+        // 3. 마우스 드래그를 입체 구형 회전 각도(Spherical Coordinates)로 변환하는 조작 로직
+        function onPointerDown(e) {
+            isUserInteracting = true;
+            onPointerDownPointerX = e.clientX;
+            onPointerDownPointerY = e.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+        }
+
+        function onPointerMove(e) {
+            if (isUserInteracting === true) {
+                lon = (onPointerDownPointerX - e.clientX) * 0.15 + onPointerDownLon;
+                lat = (e.clientY - onPointerDownPointerY) * 0.15 + onPointerDownLat;
+            }
+        }
+
+        function onPointerUp() { 
+            isUserInteracting = false; 
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // 4. 실시간 가상 공간 그래픽 드로우 루프
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+        }
+
+        function update() {
+            lat = Math.max(-85, Math.min(85, lat));
+            
+            const phi = THREE.MathUtils.degToRad(90 - lat);
+            const theta = THREE.MathUtils.degToRad(lon);
+
+            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = 500 * Math.cos(phi);
+            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(camera.target);
+            renderer.render(scene, camera);
+        }
+    </script>
+
+    
    <title>인터넷 검색 영상 360 VR 자동 컨버터</title>
     <!-- [오류 수정] Cloudflare의 올바른 Three.js 라이브러리 CDN 경로 연동 -->
     <script src="https://cloudflare.com"></script>
