@@ -26,6 +26,122 @@
   <meta name="color-scheme" content="dark">
   <meta name="MobileOptimized" content="1359" />
 
+    <title>Supabase Edge Functions 무인증 실전 제어 센터</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; background-color: #fafafa; color: #171717; }
+        h1 { color: #111827; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; font-size: 24px; margin-bottom: 5px; }
+        .badge { display: inline-block; background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 13px; font-weight: bold; margin-bottom: 20px; }
+        .container { display: flex; flex-direction: column; gap: 16px; }
+        .card { background: white; border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; margin-bottom: 6px; color: #111827; font-size: 18px; }
+        .card p { margin: 0 0 12px 0; font-size: 13px; color: #6b7280; font-family: monospace; }
+        .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; }
+        input[type="text"]:focus { border-color: #3ecf8e; box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.18); }
+        button { background: #3ecf8e; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+        button:hover { background: #2e9f6d; }
+        pre { background: #1f2937; color: #38bdf8; padding: 14px; border-radius: 6px; overflow-x: auto; font-family: monospace; font-size: 13px; margin: 0; min-height: 24px; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <h1>Supabase Edge Functions 실전 제어 패널</h1>
+    <div class="badge">✓ 서버verify_jwt=false 연동모드 (Anon Key 미요구)</div>
+
+    <div class="container">
+        <!-- 1. adult-proxy -->
+        <div class="card">
+            <h3>1. adult-proxy</h3>
+            <p>https://supabase.co</p>
+            <div class="input-group">
+                <input type="text" id="param-adult" placeholder="보낼 데이터 또는 우회 타겟 URL 주소 입력">
+                <button onclick="callFunction('adult-proxy', 'param-adult')">실제 요청 전송</button>
+            </div>
+            <pre id="result-adult">결과 대기 중...</pre>
+        </div>
+
+        <!-- 2. cors-proxy -->
+        <div class="card">
+            <h3>2. cors-proxy</h3>
+            <p>https://supabase.co</p>
+            <div class="input-group">
+                <input type="text" id="param-cors" placeholder="CORS 우회 요청할 타겟 웹 주소 입력">
+                <button onclick="callFunction('cors-proxy', 'param-cors')">실제 요청 전송</button>
+            </div>
+            <pre id="result-cors">결과 대기 중...</pre>
+        </div>
+
+        <!-- 3. omega-focer-infinity -->
+        <div class="card">
+            <h3>3. omega-focer-infinity</h3>
+            <p>https://supabase.co</p>
+            <div class="input-group">
+                <input type="text" id="param-omega" placeholder="전달할 페이로드 데이터 입력">
+                <button onclick="callFunction('omega-focer-infinity', 'param-omega')">실제 요청 전송</button>
+            </div>
+            <pre id="result-omega">결과 대기 중...</pre>
+        </div>
+
+        <!-- 4. dns-lookup -->
+        <div class="card">
+            <h3>4. dns-lookup</h3>
+            <p>https://supabase.co</p>
+            <div class="input-group">
+                <input type="text" id="param-dns" placeholder="조회할 도메인 주소 입력 (예: google.com)">
+                <button onclick="callFunction('dns-lookup', 'param-dns')">실제 요청 전송</button>
+            </div>
+            <pre id="result-dns">결과 대기 중...</pre>
+        </div>
+    </div>
+
+    <script>
+        // 검증된 전용 프로젝트 API 게이트웨이 주소
+        const BASE_URL = "https://supabase.co";
+
+        async function callFunction(endpoint, inputId) {
+            const inputValue = document.getElementById(inputId).value.trim();
+            const resultId = inputId.replace('param', 'result');
+            const resultPre = document.getElementById(resultId);
+
+            resultPre.textContent = "서버로 실제 통신 중...";
+            resultPre.style.color = "#38bdf8";
+
+            try {
+                // 토큰 인증 헤더를 완벽하게 제거한 순수 데이터 통신 구조
+                const response = await fetch(`${BASE_URL}/${endpoint}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                        // verify_jwt = false 상태이므로 Authorization 헤더가 필요 없습니다.
+                    },
+                    body: JSON.stringify({ 
+                        url: inputValue,
+                        payload: inputValue,
+                        domain: inputValue
+                    }) 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`서버 반환 에러 (상태코드: ${response.status})`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const data = await response.json();
+                    resultPre.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const textData = await response.text();
+                    resultPre.textContent = textData;
+                }
+                resultPre.style.color = "#34d399"; // 통신 성공 시 초록색 출력
+
+            } catch (error) {
+                resultPre.textContent = `실제 통신 에러: ${error.message}\n\n[원인 확인]\n서버 단에서 CORS(Access-Control-Allow-Origin) 설정이 안 되어 브라우저가 차단했거나, 서버 내부 코드(Deno) 에러일 수 있습니다.`;
+                resultPre.style.color = "#f87171"; // 에러 시 빨간색 출력
+            }
+        }
+    </script>
+  
   <!-- HDR 및 외부 스크립트 -->
   <script src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@gh-pages/hdr.js"></script>
   
@@ -574,7 +690,7 @@
             delete window[cbName];
           };
 
-          scriptEl.src = 'http://suggestqueries.google.co.jp/complete/search?client=firefox&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko&safe=off&callback=' + cbName;
+          scriptEl.src = 'http://suggestqueries.google.co.jp/complete/search?client=chrome&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko&safe=off&desktop=true&callback=' + cbName;
           document.body.appendChild(scriptEl);
         }, 250);
       }
