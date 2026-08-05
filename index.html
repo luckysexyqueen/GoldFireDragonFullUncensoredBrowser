@@ -331,12 +331,10 @@
         box-shadow: 0 0 15px #a855f7 !important;
       }
 
-      /* 강제로 완전히 숨기는 클래스 */
       .force-hidden {
         display: none !important;
       }
-      
-      /* 커스텀 스크롤바 */
+
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
@@ -425,7 +423,6 @@
           >
             <i class="fa-solid fa-grip text-purple-300 text-lg"></i>
           </button>
-          <!-- 검색창 및 로고 토글 버튼 -->
           <button id="toggle-main-btn" type="button" title="검색창 및 로고 숨기기 / 보이기">👁️</button>
         </div>
       </header>
@@ -472,7 +469,7 @@
         </div>
       </div>
 
-      <!-- 로고와 검색창이 포함된 메인 컨텐츠 영역 -->
+      <!-- 로고와 검색창 영역 -->
       <main id="main-content" class="flex-1 flex flex-col items-center justify-center px-4 py-10">
         <div class="mb-8 text-center select-none clickable">
           <img
@@ -498,7 +495,7 @@
               id="search-input"
               type="text"
               class="flex-1 bg-transparent outline-none text-base md:text-lg placeholder:text-purple-400 text-purple-100 min-w-0"
-              placeholder="검색어 또는 URL을 입력하세요"
+              placeholder="검색어 또는 URL 주소를 입력하세요"
               autocomplete="off"
               aria-label="검색어 입력"
             />
@@ -530,25 +527,33 @@
           <ul id="suggestions" class="hidden absolute left-0 right-0 z-50" role="listbox"></ul>
         </div>
 
-        <div class="flex justify-center gap-4 mt-6 flex-wrap clickable">
+        <!-- 검색 및 우회 접속 버튼 그룹 -->
+        <div class="flex justify-center gap-3 mt-6 flex-wrap clickable">
           <button
             id="search-btn"
-            class="px-8 py-3 bg-purple-600 hover:bg-purple-700 active:scale-95 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-purple-900/50 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            class="px-6 py-3 bg-purple-600 hover:bg-purple-700 active:scale-95 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-purple-900/50"
           >
             GoldFireDragon 검색
           </button>
           <button
             id="lucky-btn"
-            class="px-8 py-3 bg-transparent border border-purple-400 hover:bg-purple-500/20 active:scale-95 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-purple-400"
+            class="px-6 py-3 bg-transparent border border-purple-400 hover:bg-purple-500/20 active:scale-95 rounded-xl text-sm font-semibold transition-all"
           >
             I'm Feeling Lucky
           </button>
           <button
             id="croxy-btn"
-            class="px-8 py-3 bg-transparent border border-emerald-500 hover:bg-emerald-500/20 active:scale-95 rounded-xl text-sm font-semibold text-emerald-300 hover:text-emerald-100 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400 flex items-center gap-2"
+            class="px-6 py-3 bg-transparent border border-emerald-500 hover:bg-emerald-500/20 active:scale-95 rounded-xl text-sm font-semibold text-emerald-300 hover:text-emerald-100 transition-all flex items-center gap-2"
           >
             <i class="fa-solid fa-shield-halved"></i>
-            CroxyProxy 검색
+            CroxyProxy 우회
+          </button>
+          <button
+            id="bypass-btn"
+            class="px-6 py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 active:scale-95 rounded-xl text-sm font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-red-900/50"
+          >
+            <i class="fa-solid fa-lock-open"></i>
+            🔥 강력 우회 접속
           </button>
         </div>
 
@@ -616,7 +621,7 @@
         </nav>
       </main>
 
-      <!-- Supabase 통합 검색 결과 패널 (검색 시 자동 노출) -->
+      <!-- Supabase 통합 검색 결과 패널 -->
       <div id="supabase-results-panel" class="hidden absolute right-6 top-24 w-96 max-h-[70vh] bg-black/85 border border-purple-500 rounded-xl p-4 overflow-y-auto z-[600] shadow-[0_0_30px_rgba(168,85,247,0.5)] backdrop-blur-md flex-col">
         <div class="flex justify-between items-center mb-3 border-b border-purple-800 pb-2">
           <h3 class="text-purple-300 text-sm font-bold"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Supabase 통합 도구 분석</h3>
@@ -625,7 +630,7 @@
         <div id="supabase-results" class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1 overflow-y-auto"></div>
       </div>
 
-      <!-- 하단 푸터 영역 -->
+      <!-- 하단 푸터 -->
       <footer
         id="main-footer"
         class="py-5 text-center text-xs text-purple-500 border-t border-purple-900/30 clickable"
@@ -640,20 +645,17 @@
       </footer>
     </div>
 
-    <!-- 화면 고정 360 조이스틱 영역 -->
+    <!-- 화면 고정 조이스틱 -->
     <div id="joystick-zone"></div>
 
     <script>
-      // ==========================================================
-      // [신규] 4개의 Supabase 통합 도구를 동시에 실행하는 함수
-      // ==========================================================
+      // 4개의 Supabase 통합 도구 실행 함수
       async function runAllSupabaseFunctions(keyword) {
         const panel = document.getElementById("supabase-results-panel");
         const resultsDiv = document.getElementById("supabase-results");
         
         if (!keyword || !keyword.trim()) return;
 
-        // 결과 패널 띄우기 및 로딩 표시
         panel.classList.remove("hidden");
         panel.classList.add("flex");
         resultsDiv.innerHTML = '<div class="text-purple-400 italic text-center py-6">4개의 Supabase 통합 도구 동시 분석 중... <i class="fa-solid fa-spinner fa-spin ml-2"></i></div>';
@@ -689,7 +691,6 @@
             });
           });
 
-          // 병렬 처리 대기
           const allResults = await Promise.all(fetchPromises);
           
           let outputHtml = '';
@@ -807,6 +808,7 @@
         var searchBtn = document.getElementById("search-btn");
         var luckyBtn = document.getElementById("lucky-btn");
         var croxyBtn = document.getElementById("croxy-btn");
+        var bypassBtn = document.getElementById("bypass-btn");
 
         var toggleBtn = document.getElementById("toggle-main-btn");
         var mainContent = document.getElementById("main-content");
@@ -819,7 +821,6 @@
         var clearBtn = document.getElementById("clear-btn");
         var suggestions = document.getElementById("suggestions");
 
-        // Supabase 결과창 닫기 버튼 이벤트
         document.getElementById("close-results-btn").addEventListener("click", function() {
             document.getElementById("supabase-results-panel").classList.add("hidden");
             document.getElementById("supabase-results-panel").classList.remove("flex");
@@ -902,7 +903,6 @@
           appsPopup.classList.remove("open");
         });
 
-        // Supabase 결과 노출을 유지하기 위해 구글 검색은 새 탭으로 띄움
         function openSearch(keyword, lucky) {
           keyword = (keyword || "").trim();
           if (!keyword) {
@@ -927,6 +927,7 @@
           openSearch(keyword, true);
         });
 
+        // CroxyProxy 우회 버튼
         croxyBtn.addEventListener("click", function () {
           var q = (input.value || "").trim();
           if (!q) {
@@ -940,6 +941,22 @@
             ? q
             : `https://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
           window.open("https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=" + encodeURIComponent(targetUrl), "_blank");
+        });
+
+        // 🔥 강력 우회 접속 (BlockAway) 버튼
+        bypassBtn.addEventListener("click", function () {
+          var q = (input.value || "").trim();
+          if (!q) {
+            input.focus();
+            return;
+          }
+          runAllSupabaseFunctions(q);
+
+          var isURL = /^https?:\/\//i.test(q) || /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(q);
+          var targetUrl = isURL
+            ? q
+            : `https://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
+          window.open("https://www.blockaway.net/_ko/?__cpLangSet=1&url=" + encodeURIComponent(targetUrl), "_blank");
         });
 
         input.addEventListener("keydown", function (e) {
@@ -1017,7 +1034,7 @@
       });
     </script>
 
-    <!-- VPN 백그라운드 구동 레이어 (기존 그대로 유지) -->
+    <!-- VPN 백그라운드 레이어 -->
     <div id="vpn-floating-widget" style="display: none !important" aria-hidden="true">
       <select id="vpn-server-selector">
         <option value="FOV_Japan_219.100.37.170_tcp.ovpn">🇯🇵 FOV 219.100.37.170 TCP</option>
