@@ -574,7 +574,7 @@
             delete window[cbName];
           };
 
-          scriptEl.src = 'https://suggestqueries.google.co.jp/complete/search?client=firefox&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko&callback=' + cbName;
+          scriptEl.src = 'http://suggestqueries.google.co.jp/complete/search?client=firefox&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko&safe=off&callback=' + cbName;
           document.body.appendChild(scriptEl);
         }, 250);
       }
