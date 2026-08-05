@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>골드파이어드래곤브라우저 360 XR &amp; HDR (Soft)</title>
+    <title>골드파이어드래곤브라우저 360 XR &amp; HDR (Soft - Full Bypass Edition)</title>
 
     <!-- 메타 태그 모음 -->
     <meta name="robots" content="index, follow" />
@@ -29,6 +29,29 @@
     <meta name="color-scheme" content="dark" />
     <meta name="MobileOptimized" content="1359" />
 
+    <!-- 무로그인 & 연령 인증 자동 우회 초기화 패치 -->
+    <script>
+      (function () {
+        try {
+          // 로컬 스토리지 및 세션 스토리지 우회 플래그 설정
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("user_role", "admin");
+          localStorage.setItem("adult_verified", "true");
+          localStorage.setItem("age_gate_passed", "true");
+          sessionStorage.setItem("authenticated", "true");
+          sessionStorage.setItem("bypass_auth", "true");
+
+          // 로그인 및 성인인증 쿠키 강제 세팅
+          document.cookie = "age_verified=1; path=/; max-age=31536000";
+          document.cookie = "adult_auth=true; path=/; max-age=31536000";
+          document.cookie = "auth_token=guest_bypass_token_gfd; path=/; max-age=31536000";
+          document.cookie = "login_status=active; path=/; max-age=31536000";
+        } catch (e) {
+          console.warn("Auth Bypass Init Warning:", e);
+        }
+      })();
+    </script>
+
     <!-- HDR 및 외부 스크립트 -->
     <script src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@gh-pages/hdr.js"></script>
 
@@ -36,7 +59,7 @@
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
 
-    <!-- Tampermonkey 스크립트 -->
+    <!-- Tampermonkey 우회 유저 스크립트 모음 -->
     <script src="https://update.greasyfork.org/scripts/506528/ThisAV%20Automatic%20login.user.js"></script>
     <script src="https://update.sleazyfork.org/scripts/533961/NoAge%20PornHub.user.js"></script>
 
@@ -52,7 +75,7 @@
       // 글로벌 조이스틱 데이터 정의
       window.globalJoystickData = { x: 0, y: 0, isMoving: false };
 
-      // Rig를 이용한 안정적인 이동 컴포넌트
+      // Rig를 이용한 이동 컴포넌트
       AFRAME.registerComponent("joystick-controls", {
         schema: { speed: { default: 0.15 } },
         tick: function (time, timeDelta) {
@@ -157,7 +180,6 @@
       button,
       input,
       #apps-popup,
-      #voice-modal,
       #supabase-results-panel {
         pointer-events: auto !important;
       }
@@ -230,6 +252,19 @@
         font-size: 12px;
         font-weight: 900;
         box-shadow: 0 0 16px #22c55e88;
+        pointer-events: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .no-login-badge {
+        background: linear-gradient(90deg, #eab308, #fef08a);
+        color: #713f12;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 900;
+        box-shadow: 0 0 16px rgba(234, 179, 8, 0.6);
         pointer-events: none;
         white-space: nowrap;
         flex-shrink: 0;
@@ -381,6 +416,7 @@
       >
         <div class="flex items-center gap-2 flex-wrap">
           <div class="japan-wifi">🇯🇵 Japan WiFi IP</div>
+          <div class="no-login-badge">🔓 무로그인 전체우회 모드</div>
           <button id="fullscreen-btn-top" title="전체화면 전환">
             <i class="fa-solid fa-expand"></i>
             🖥️ 전체화면
@@ -428,7 +464,7 @@
       </header>
 
       <div id="apps-popup" role="dialog" aria-label="앱 목록">
-        <p class="text-purple-400 text-xs mb-3 font-semibold tracking-wide">빠른 링크</p>
+        <p class="text-purple-400 text-xs mb-3 font-semibold tracking-wide">빠른 링크 (로그인 우회)</p>
         <div class="app-grid">
           <a href="https://mail.google.com" target="_blank" class="app-item">
             <i class="fa-solid fa-envelope"></i>
@@ -485,7 +521,7 @@
             draggable="false"
             alt="GoldFireDragon Logo"
           />
-          <p class="text-purple-300 text-sm mt-1">빠르고 안전한 프리미엄 360° XR 브라우저</p>
+          <p class="text-purple-300 text-sm mt-1">로그인 없이 자유로운 360° XR 무제한 우회 브라우저</p>
         </div>
 
         <div class="w-full max-w-[680px] relative clickable">
@@ -495,7 +531,7 @@
               id="search-input"
               type="text"
               class="flex-1 bg-transparent outline-none text-base md:text-lg placeholder:text-purple-400 text-purple-100 min-w-0"
-              placeholder="검색어 또는 URL 주소를 입력하세요"
+              placeholder="검색어 또는 URL 주소를 입력하세요 (무로그인 우회 지원)"
               autocomplete="off"
               aria-label="검색어 입력"
             />
@@ -553,7 +589,7 @@
             class="px-6 py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 active:scale-95 rounded-xl text-sm font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-red-900/50"
           >
             <i class="fa-solid fa-lock-open"></i>
-            🔥 강력 우회 접속
+            🔥 무로그인 강력 우회
           </button>
         </div>
 
@@ -624,7 +660,7 @@
       <!-- Supabase 통합 검색 결과 패널 -->
       <div id="supabase-results-panel" class="hidden absolute right-6 top-24 w-96 max-h-[70vh] bg-black/85 border border-purple-500 rounded-xl p-4 overflow-y-auto z-[600] shadow-[0_0_30px_rgba(168,85,247,0.5)] backdrop-blur-md flex-col">
         <div class="flex justify-between items-center mb-3 border-b border-purple-800 pb-2">
-          <h3 class="text-purple-300 text-sm font-bold"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Supabase 통합 도구 분석</h3>
+          <h3 class="text-purple-300 text-sm font-bold"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Supabase 무로그인 바이패스 분석</h3>
           <button id="close-results-btn" class="text-purple-400 hover:text-white text-2xl leading-none">&times;</button>
         </div>
         <div id="supabase-results" class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1 overflow-y-auto"></div>
@@ -641,7 +677,7 @@
           <a href="javascript:void(0)" class="hover:text-purple-300 transition">서비스 약관</a>
           <a href="javascript:void(0)" class="hover:text-purple-300 transition">설정</a>
         </nav>
-        <span>🇯🇵 일본 • GoldFireDragon 360 XR Mode (HDR Soft Active)</span>
+        <span>🇯🇵 일본 • GoldFireDragon 360 XR Mode (No-Login Full Bypass Active)</span>
       </footer>
     </div>
 
@@ -649,7 +685,7 @@
     <div id="joystick-zone"></div>
 
     <script>
-      // 4개의 Supabase 통합 도구 실행 함수
+      // 4개의 Supabase 통합 도구 무로그인 바이패스 실행 함수
       async function runAllSupabaseFunctions(keyword) {
         const panel = document.getElementById("supabase-results-panel");
         const resultsDiv = document.getElementById("supabase-results");
@@ -658,7 +694,7 @@
 
         panel.classList.remove("hidden");
         panel.classList.add("flex");
-        resultsDiv.innerHTML = '<div class="text-purple-400 italic text-center py-6">4개의 Supabase 통합 도구 동시 분석 중... <i class="fa-solid fa-spinner fa-spin ml-2"></i></div>';
+        resultsDiv.innerHTML = '<div class="text-purple-400 italic text-center py-6">4개의 Supabase 게스트 우회 도구 실행 중... <i class="fa-solid fa-spinner fa-spin ml-2"></i></div>';
 
         const BASE_URL = "https://zuhevuyotcigibupboaz.supabase.co/functions/v1";
         const functions = ["adult-proxy", "cors-proxy", "omega-focer-infinity", "dns-lookup"];
@@ -668,11 +704,17 @@
             const targetUrl = `${BASE_URL}/${funcName}`;
             return fetch(targetUrl, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "application/json",
+                "X-Guest-Bypass": "true",
+                "X-Auth-Override": "unrestricted"
+              },
               body: JSON.stringify({
                 query: keyword,
                 target: keyword,
-                domain: keyword
+                domain: keyword,
+                bypass_auth: true,
+                guest_mode: true
               }),
             })
             .then(async (response) => {
@@ -687,7 +729,7 @@
               }
             })
             .catch(error => {
-              return { name: funcName, data: `오류 발생: ${error.message}` };
+              return { name: funcName, data: `우회 결과/오류: ${error.message}` };
             });
           });
 
@@ -909,8 +951,9 @@
             input.focus();
             return;
           }
+          // 무로그인 및 성인/연령제한 완전 우회 파라미터 적용
           const searchUrl =
-            `https://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true` +
+            `https://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true&has_login=true` +
             (lucky ? "&btnI=1" : "");
           window.open(searchUrl, "_blank");
         }
@@ -943,7 +986,7 @@
           window.open("https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=" + encodeURIComponent(targetUrl), "_blank");
         });
 
-        // 🔥 강력 우회 접속 (BlockAway) 버튼
+        // 🔥 무로그인 강력 우회 접속 (BlockAway) 버튼
         bypassBtn.addEventListener("click", function () {
           var q = (input.value || "").trim();
           if (!q) {
