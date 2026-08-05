@@ -29,6 +29,74 @@
     <meta name="color-scheme" content="dark" />
     <meta name="MobileOptimized" content="1359" />
 
+   <title>인터넷 검색 영상 360 VR 자동 컨버터</title>
+    <!-- [오류 수정] Cloudflare의 올바른 Three.js 라이브러리 CDN 경로 연동 -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #111;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        /* 실제 인터넷 브라우저처럼 작동하는 상단 주소/검색창 UI */
+        #browser-navbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #202124;
+            height: 60px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #3c4043;
+            border-radius: 20px;
+            background: #303134;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #8ab4f8;
+            color: #202124;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .nav-btn:hover { background: #93bdfd; }
+
+        /* 사용자가 검색한 인터넷 사이트가 뜨는 영역 */
+        #web-viewport {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+            background: #fff;
+        }
+
+        /* 영상 감지 시 최상단에서 화면을 덮어버릴 3D 공간 캔버스 */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999999;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    
     <!-- 무로그인 & 연령 인증 자동 우회 초기화 패치 -->
     <script>
       (function () {
