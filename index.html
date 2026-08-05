@@ -27,59 +27,18 @@
   <meta name="MobileOptimized" content="1359" />
 
   <!-- HDR 및 외부 스크립트 -->
-  <script src="hdr.js"></script>
-  <script src="lib/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@gh-pages/hdr.js"></script>
   
   <!-- A-Frame (360 VR 라이브러리) 및 조이스틱 NippleJS -->
-  <script src="lib/aframe.min.js"></script>
-  <script src="lib/nipplejs.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
 
   <!-- 외부 스타일 및 아이콘 -->
-  <script src="lib/tailwind.min.js"></script>
-  <link rel="stylesheet" href="lib/fontawesome/all.min.css">
-  <link rel="stylesheet" href="fonts/gamefont.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GoldFireDragonFullUnCensoredGoogleProxyInAndroidWebBrowserAppHomePage@refs/heads/codespace-super-robot-xrwp9jp647v62v74v/fonts/gamefont.css">
 
   <script>
-    // Supabase 및 하이브리드 환경 설정
-    const ENV = {
-      isLocal: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
-      isOffline: !navigator.onLine,
-      supabaseUrl: 'https://zuhevuyotcigibupboaz.supabase.co',
-      supabaseKey: 'sb_publishable_pP4Oz7XuBpHBRhUC-PYl6Q_Ju5u95Pf'
-    };
-
-    let supabase = null;
-    if (typeof supabase !== 'undefined' && ENV.supabaseUrl && ENV.supabaseKey) {
-      try {
-        supabase = window.supabase.createClient(ENV.supabaseUrl, ENV.supabaseKey);
-        console.log('[+] Supabase 프론트엔드 초기화 완료');
-      } catch (e) { console.error('Supabase 초기화 실패:', e); }
-    }
-
-    // 하이브리드 API 호출 헬퍼
-    const GFD_API = {
-      async call(endpoint, options = {}) {
-        // 1. 로컬 서버 우선 (localhost인 경우)
-        if (ENV.isLocal) {
-          try {
-            const res = await fetch(`/api/${endpoint}`, options);
-            if (res.ok) return await res.json();
-          } catch (e) { console.warn('로컬 API 실패, Supabase 시도...'); }
-        }
-
-        // 2. Supabase Edge Function 호출 (온라인인 경우)
-        if (!ENV.isOffline && supabase) {
-          try {
-            const { data, error } = await supabase.functions.invoke(endpoint, options);
-            if (!error) return data;
-          } catch (e) { console.warn('Supabase Function 실패...'); }
-        }
-
-        // 3. 오프라인 폴백 (LocalStorage 등)
-        return { error: 'Offline Mode: 기능을 사용할 수 없습니다.', offline: true };
-      }
-    };
-
     // 글로벌 조이스틱 데이터 정의
     window.globalJoystickData = { x: 0, y: 0, isMoving: false };
 
@@ -136,8 +95,8 @@
   <style>
     @font-face {
       font-family: 'aCutieHoney';
-      src: url('fonts/aCutieHoney.woff') format('woff'),
-           url('fonts/aCutieHoney.ttf') format('truetype');
+      src: url('https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GoldFireDragonFullUnCensoredGoogleProxyInAndroidWebBrowserAppHomePage@refs/heads/codespace-super-robot-xrwp9jp647v62v74v/fonts/aCutieHoney.woff') format('woff'),
+           url('/fonts/aCutieHoney.ttf') format('truetype');
       font-weight: normal; font-style: normal; font-display: swap;
     }
 
@@ -282,7 +241,7 @@
   <div id="xr-bg-container">
     <a-scene embedded vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <img id="bg-360" src="images/GoldFireDragonBrowser_home_page.jpg" crossorigin="anonymous">
+        <img id="bg-360" src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GoldFireDragonFullUnCensoredGoogleProxyInAndroidWebBrowserAppHomePage@50937264e913e22f347e83e928724669963b2565/images/GoldFireDragonBrowser_home_page.jpg" crossorigin="anonymous">
       </a-assets>
       <a-sky src="#bg-360" rotation="0 -90 0"></a-sky>
       
@@ -330,7 +289,7 @@
     <!-- 로고와 검색창이 포함된 메인 컨텐츠 영역 -->
     <main id="main-content" class="flex-1 flex flex-col items-center justify-center px-4 py-10">
       <div class="mb-8 text-center select-none clickable">
-       <img src="images/GoldFireDragonBrowser_logo_removebg_preview.png" style="width: clamp(90px,16vw,160px); display: block; height: auto; filter: none !important; image-rendering: auto !important;" class="mx-auto drop-shadow-lg" draggable="false" alt="GoldFireDragon Logo">
+       <img src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@a81b2430450dcf18c49813c55be06c6ee0ad256f/images/GoldFireDragonBrowser_logo_removebg_preview.png" style="width: clamp(90px,16vw,160px); display: block; height: auto; filter: none !important; image-rendering: auto !important;" class="mx-auto drop-shadow-lg" draggable="false" alt="GoldFireDragon Logo">
         <p class="text-purple-300 text-sm mt-1">빠르고 안전한 프리미엄 360° XR 브라우저</p>
       </div>
 
@@ -559,15 +518,9 @@
       });
       document.addEventListener('click', function () { appsPopup.classList.remove('open'); });
 
-      async function openSearch(keyword, lucky) {
+      function openSearch(keyword, lucky) {
         keyword = (keyword || '').trim();
         if (!keyword) { input.focus(); return; }
-
-        // Supabase 검색 로그 기록 (비동기)
-        if (supabase) {
-          supabase.from('search_logs').insert([{ query: keyword, engine: 'google', timestamp: new Date() }]).then(() => {});
-        }
-
         const searchUrl = `https://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true` + (lucky ? '&btnI=1' : '');
         window.location.href = searchUrl;
       }
@@ -575,24 +528,11 @@
       searchBtn.addEventListener('click', function () { openSearch(input.value, false); });
       luckyBtn.addEventListener('click', function () { openSearch(input.value, true); });
 
-      croxyBtn.addEventListener('click', async function () {
+      croxyBtn.addEventListener('click', function () {
         var q = (input.value || '').trim();
         if (!q) { input.focus(); return; }
         var isURL = /^https?:\/\//i.test(q) || /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(q);
         var targetUrl = isURL ? q : `https://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
-        
-        // 하이브리드 프록시 시도 (Supabase Adult Proxy 또는 로컬 프록시)
-        try {
-          const proxyData = await GFD_API.call('adult-proxy', {
-            method: 'GET',
-            queries: { url: targetUrl }
-          });
-          if (proxyData && !proxyData.error) {
-            console.log('[+] 프록시 연결 성공');
-            // 실제 서비스에서는 프록시된 페이지를 iframe이나 새 창으로 띄울 수 있음
-          }
-        } catch(e) { console.warn('프록시 API 실패, 기본 CroxyProxy 사용'); }
-
         window.location.href = 'https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=' + encodeURIComponent(targetUrl);
       });
 
@@ -612,35 +552,23 @@
 
       var suggestTimer = null;
       var scriptCounter = 0;
-      async function fetchSuggestions(query) {
+      function fetchSuggestions(query) {
         clearTimeout(suggestTimer);
-        suggestTimer = setTimeout(async function () {
-          // 온라인 상태일 때 Supabase/로컬 API를 통한 검색 제안 시도
-          if (!ENV.isOffline) {
-            try {
-              const data = await GFD_API.call('cors-proxy', {
-                method: 'GET',
-                queries: { url: 'https://suggestqueries.google.co.jp/complete/search?client=firefox&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko' }
-              });
-              if (Array.isArray(data) && data[1]) {
-                renderSuggestions(data[1]);
-                return;
-              }
-            } catch (e) { console.warn('API 검색 제안 실패, JSONP 폴백 시도'); }
-          }
-
-          // JSONP 폴백 (기존 방식)
+        suggestTimer = setTimeout(function () {
           var cbName = '__fdSuggest_' + (++scriptCounter);
           var scriptEl = document.createElement('script');
+          
           window[cbName] = function (data) {
             renderSuggestions(Array.isArray(data[1]) ? data[1] : []);
             scriptEl.remove();
             delete window[cbName];
           };
+          
           scriptEl.onerror = function() {
             scriptEl.remove();
             delete window[cbName];
           };
+
           scriptEl.src = 'https://suggestqueries.google.co.jp/complete/search?client=firefox&q=' + encodeURIComponent(query) + '&gl=jp&hl=ko&callback=' + cbName;
           document.body.appendChild(scriptEl);
         }, 250);
