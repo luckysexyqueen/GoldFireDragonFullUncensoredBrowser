@@ -685,3 +685,103 @@
   
 </body>
 </html>
+
++
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 통합 프록시 & 검색 도구</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input[type="text"] { width: 100%; padding: 10px; box-sizing: border-box; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 12px; font-size: 16px; background-color: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0051a8; }
+        #results { margin-top: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9; min-height: 50px; white-space: pre-wrap; word-break: break-all; }
+        .loading { color: #666; font-style: italic; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Supabase 통합 도구</h1>
+    
+    <!-- 1. 실행할 기능 선택 -->
+    <div class="form-group">
+        <label for="functionSelect">실행할 서비스 선택</label>
+        <select id="functionSelect">
+            <option value="adult-proxy">성인 컨텐츠 프록시 (adult-proxy)</option>
+            <option value="cors-proxy">CORS 우회 프록시 (cors-proxy)</option>
+            <option value="omega-focer-infinity">오메가 포서 인피니티 (omega-focer-infinity)</option>
+            <option value="dns-lookup">DNS 조회 (dns-lookup)</option>
+        </select>
+    </div>
+
+    <!-- 2. 검색어 또는 URL 입력 -->
+    <div class="form-group">
+        <label for="targetInput">입력 값 (URL, 도메인, 또는 검색어)</label>
+        <input type="text" id="targetInput" placeholder="요청 데이터 또는 주소를 입력하세요...">
+    </div>
+
+    <button onclick="requestEdgeFunction()">요청 전송</button>
+
+    <h3>실행 결과</h3>
+    <div id="results">원하는 서비스를 선택하고 요청 버튼을 눌러주세요.</div>
+
+    <script>
+        async function requestEdgeFunction() {
+            const selectedFunction = document.getElementById('functionSelect').value;
+            const inputValue = document.getElementById('targetInput').value;
+            const resultsDiv = document.getElementById('results');
+
+            if (!inputValue.trim()) {
+                resultsDiv.innerHTML = '<span class="error">입력 값을 작성해주세요.</span>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<span class="loading">Supabase Edge Function 처리 중...</span>';
+
+            // Base URL 설정
+            const BASE_URL = 'https://zuhevuyotcigibupboaz.supabase.co/functions/v1';
+            const targetUrl = `${BASE_URL}/${selectedFunction}`;
+
+            try {
+                // verify_jwt = false 상태이므로 Authorization 헤더 제외
+                const response = await fetch(targetUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        query: inputValue,
+                        target: inputValue, // 프록시용 대상 필드 대응
+                        domain: inputValue  // DNS 조회용 필드 대응
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`서버 응답 오류 (상태코드: ${response.status})`);
+                }
+
+                // 응답 형식(JSON 또는 Text) 확인 후 출력
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const jsonData = await response.json();
+                    resultsDiv.textContent = JSON.stringify(jsonData, null, 2);
+                } else {
+                    const textData = await response.text();
+                    resultsDiv.textContent = textData;
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<span class="error">오류 발생: ${error.message}</span>`;
+            }
+        }
+    </script>
+
+</body>
+</html>
