@@ -26,6 +26,211 @@
     <meta name="color-scheme" content="dark" />
     <meta name="MobileOptimized" content="1359" />
 
+   <title>실시간 자동 감지 360도 VR 플레이어</title>
+    <!-- 1. 오류 수정: 올바른 Three.js CDN 경로 로드 -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111;
+            font-family: sans-serif;
+            color: #fff;
+        }
+        /* 입력 및 안내 UI 공간 */
+        #setup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            transition: opacity 0.5s ease;
+        }
+        h2 { margin-top: 0; color: #ff0055; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #222;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .btn {
+            padding: 12px 30px;
+            background: #ff0055;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .btn:hover { background: #e6004c; }
+        /* 원본 비디오는 숨김 처리 */
+        #video-element {
+            display: none;
+        }
+        /* 3D VR 화면 캔버스 */
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 초기 설정 및 영상 링크 입력 UI -->
+    <div id="setup-container">
+        <h2>360° VR 자동 컨버터</h2>
+        <p>재생할 영상의 웹 주소(URL)를 입력하세요.<br>(mp4, webm 등의 비디오 파일 주소)</p>
+        <input type="text" id="video-url" placeholder="https://threejs.org">
+        <button id="start-btn" class="btn">영상 로드 및 대기</button>
+    </div>
+
+    <!-- 비디오 엘리먼트 (동적 주소 반영) -->
+    <video id="video-element" loop crossorigin="anonymous" playsinline></video>
+
+    <script>
+        const video = document.getElementById('video-element');
+        const setupContainer = document.getElementById('setup-container');
+        const videoUrlInput = document.getElementById('video-url');
+        const startBtn = document.getElementById('start-btn');
+
+        let isConverted = false;
+        let scene, camera, renderer, texture, mesh;
+        let isUserInteracting = false;
+        let lon = 0, lat = 0;
+        let onPointerDownLon = 0, onPointerDownLat = 0;
+        let onPointerDownPointerX = 0, onPointerDownPointerY = 0;
+
+        // 2. 사용자가 영상을 입력하고 준비하는 단계
+        startBtn.addEventListener('click', () => {
+            let targetUrl = videoUrlInput.value.trim();
+            // 입력값이 없으면 Three.js 기본 제공 기본 파노라마 샘플 영상 사용
+            if (!targetUrl) {
+                targetUrl = "https://threejs.org";
+            }
+            
+            video.src = targetUrl;
+            video.load();
+
+            // 안내 메시지 변경 및 감지 이벤트 활성화
+            setupContainer.innerHTML = `
+                <h2>영상이 로드되었습니다</h2>
+                <p style="color:#aaa;">아래 버튼을 눌러 재생을 시작하면<br><b style="color:#fff;">자동으로 360도 VR 화면으로 변환</b>됩니다.</p>
+                <button id="play-trigger" class="btn" style="background:#00bcd4;">영상 재생하기</button>
+            `;
+
+            // 재생(play) 이벤트를 감지하는 리스너 등록
+            const playTrigger = document.getElementById('play-trigger');
+            playTrigger.addEventListener('click', () => {
+                video.play().catch(err => {
+                    alert("비디오 재생 실패 (CORS 제한 또는 잘못된 URL 가능성): " + err.message);
+                });
+            });
+        });
+
+        // 3. 비디오 재생(Play) 발생 시 자동 감지하여 변환 로직 실행
+        video.addEventListener('play', () => {
+            if (!isConverted) {
+                setupContainer.style.opacity = '0';
+                setTimeout(() => setupContainer.style.display = 'none', 500);
+                convertTo360(video);
+            }
+        });
+
+        // 4. 자동 360도 변환 코어 로직
+        function convertTo360(videoNode) {
+            isConverted = true;
+
+            // Three.js 공간 생성 및 내부 관찰용 카메라 설정
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+            camera.target = new THREE.Vector3(0, 0, 0);
+
+            // 구체 생성 후 뒤집어서 내부 벽면에 영상을 투사하도록 설정
+            const geometry = new THREE.SphereGeometry(500, 60, 40);
+            geometry.scale(-1, 1, 1);
+
+            // 실시간 비디오 프레임을 3D 텍스처로 연동
+            texture = new THREE.VideoTexture(videoNode);
+            texture.minFilter = THREE.LinearFilter;
+
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // WebGL 렌더러 빌드 및 전체 화면 스케일링
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // 화면 드래그 회전 시점 UI 조작 바인딩
+            renderer.domElement.addEventListener('pointerdown', onPointerDown);
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('resize', onWindowResize);
+
+            // 루프 재생 애니메이션 작동
+            animate();
+        }
+
+        // 5. 시점 마우스 제어 함수 세트
+        function onPointerDown(e) {
+            isUserInteracting = true;
+            onPointerDownPointerX = e.clientX;
+            onPointerDownPointerY = e.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+        }
+
+        function onPointerMove(e) {
+            if (isUserInteracting === true) {
+                lon = (onPointerDownPointerX - e.clientX) * 0.1 + onPointerDownLon;
+                lat = (e.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+            }
+        }
+
+        function onPointerUp() {
+            isUserInteracting = false;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+        }
+
+        function update() {
+            lat = Math.max(-85, Math.min(85, lat));
+            const phi = THREE.MathUtils.degToRad(90 - lat);
+            const theta = THREE.MathUtils.degToRad(lon);
+
+            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = 500 * Math.cos(phi);
+            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(camera.target);
+            renderer.render(scene, camera);
+        }
+    </script>
+    
     <!-- 무로그인 & 연령 인증 자동 우회 초기화 패치 -->
     <script>
       (function () {
@@ -46,7 +251,7 @@
         }
       })();
     </script>
-
+    
     <!-- 외부 라이브러리 및 스크립트 -->
     <script src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@gh-pages/hdr.js"></script>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
