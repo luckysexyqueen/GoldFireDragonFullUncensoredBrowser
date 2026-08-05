@@ -526,7 +526,7 @@
       function openSearch(keyword, lucky) {
         keyword = (keyword || '').trim();
         if (!keyword) { input.focus(); return; }
-        const searchUrl = `https://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true` + (lucky ? '&btnI=1' : '');
+        const searchUrl = `http://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true` + (lucky ? '&btnI=1' : '');
         window.location.href = searchUrl;
       }
 
@@ -537,7 +537,7 @@
         var q = (input.value || '').trim();
         if (!q) { input.focus(); return; }
         var isURL = /^https?:\/\//i.test(q) || /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(q);
-        var targetUrl = isURL ? q : `https://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
+        var targetUrl = isURL ? q : `http://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
         window.location.href = 'https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=' + encodeURIComponent(targetUrl);
       });
 
