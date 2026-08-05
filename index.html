@@ -157,7 +157,8 @@
       button,
       input,
       #apps-popup,
-      #voice-modal {
+      #voice-modal,
+      #supabase-results-panel {
         pointer-events: auto !important;
       }
 
@@ -333,6 +334,19 @@
       /* 강제로 완전히 숨기는 클래스 */
       .force-hidden {
         display: none !important;
+      }
+      
+      /* 커스텀 스크롤바 */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(12, 4, 28, 0.5);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #a855f7;
+        border-radius: 3px;
       }
     </style>
   </head>
@@ -602,6 +616,15 @@
         </nav>
       </main>
 
+      <!-- Supabase 통합 검색 결과 패널 (검색 시 자동 노출) -->
+      <div id="supabase-results-panel" class="hidden absolute right-6 top-24 w-96 max-h-[70vh] bg-black/85 border border-purple-500 rounded-xl p-4 overflow-y-auto z-[600] shadow-[0_0_30px_rgba(168,85,247,0.5)] backdrop-blur-md flex-col">
+        <div class="flex justify-between items-center mb-3 border-b border-purple-800 pb-2">
+          <h3 class="text-purple-300 text-sm font-bold"><i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Supabase 통합 도구 분석</h3>
+          <button id="close-results-btn" class="text-purple-400 hover:text-white text-2xl leading-none">&times;</button>
+        </div>
+        <div id="supabase-results" class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1 overflow-y-auto"></div>
+      </div>
+
       <!-- 하단 푸터 영역 -->
       <footer
         id="main-footer"
@@ -621,6 +644,71 @@
     <div id="joystick-zone"></div>
 
     <script>
+      // ==========================================================
+      // [신규] 4개의 Supabase 통합 도구를 동시에 실행하는 함수
+      // ==========================================================
+      async function runAllSupabaseFunctions(keyword) {
+        const panel = document.getElementById("supabase-results-panel");
+        const resultsDiv = document.getElementById("supabase-results");
+        
+        if (!keyword || !keyword.trim()) return;
+
+        // 결과 패널 띄우기 및 로딩 표시
+        panel.classList.remove("hidden");
+        panel.classList.add("flex");
+        resultsDiv.innerHTML = '<div class="text-purple-400 italic text-center py-6">4개의 Supabase 통합 도구 동시 분석 중... <i class="fa-solid fa-spinner fa-spin ml-2"></i></div>';
+
+        const BASE_URL = "https://zuhevuyotcigibupboaz.supabase.co/functions/v1";
+        const functions = ["adult-proxy", "cors-proxy", "omega-focer-infinity", "dns-lookup"];
+
+        try {
+          const fetchPromises = functions.map(funcName => {
+            const targetUrl = `${BASE_URL}/${funcName}`;
+            return fetch(targetUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                query: keyword,
+                target: keyword,
+                domain: keyword
+              }),
+            })
+            .then(async (response) => {
+              if (!response.ok) throw new Error(`상태코드: ${response.status}`);
+              const contentType = response.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                return { name: funcName, data: JSON.stringify(data, null, 2) };
+              } else {
+                const textData = await response.text();
+                return { name: funcName, data: textData };
+              }
+            })
+            .catch(error => {
+              return { name: funcName, data: `오류 발생: ${error.message}` };
+            });
+          });
+
+          // 병렬 처리 대기
+          const allResults = await Promise.all(fetchPromises);
+          
+          let outputHtml = '';
+          allResults.forEach(res => {
+            outputHtml += `
+              <div class="mb-4">
+                <div class="text-purple-300 font-bold mb-1">[${res.name}]</div>
+                <div class="bg-gray-900 text-green-400 p-2 rounded border border-purple-900/50 max-h-40 overflow-y-auto font-mono text-[10px]">
+                  ${res.data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                </div>
+              </div>
+            `;
+          });
+          resultsDiv.innerHTML = outputHtml;
+        } catch (error) {
+          resultsDiv.innerHTML = `<div class="text-red-400 font-bold text-center py-4">시스템 오류: ${error.message}</div>`;
+        }
+      }
+
       window.addEventListener("load", function () {
         const cameraEl = document.getElementById("main-camera");
         if (cameraEl && cameraEl.components && cameraEl.components["look-controls"]) {
@@ -731,6 +819,12 @@
         var clearBtn = document.getElementById("clear-btn");
         var suggestions = document.getElementById("suggestions");
 
+        // Supabase 결과창 닫기 버튼 이벤트
+        document.getElementById("close-results-btn").addEventListener("click", function() {
+            document.getElementById("supabase-results-panel").classList.add("hidden");
+            document.getElementById("supabase-results-panel").classList.remove("flex");
+        });
+
         fullscreenBtnTop.addEventListener("click", function () {
           const docElem = document.documentElement;
           const requestFS =
@@ -776,9 +870,6 @@
         document.addEventListener("webkitfullscreenchange", handleFSChange);
         document.addEventListener("mozfullscreenchange", handleFSChange);
 
-        // ==========================================================
-        // [실제 작동형] 검색창과 로고 토글 제어 로직
-        // ==========================================================
         function handleToggleAction(e) {
           if (e) {
             e.preventDefault();
@@ -788,18 +879,12 @@
           isHidden = !isHidden;
 
           if (isHidden) {
-            // 검색창과 로고가 포함된 main 영역을 화면에서 완전히 제거
             mainContent.classList.add("force-hidden");
             if (footer) footer.classList.add("force-hidden");
-
-            // 눈 감은 아이콘으로 변경
             toggleBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
           } else {
-            // 검색창과 로고 다시 표시
             mainContent.classList.remove("force-hidden");
             if (footer) footer.classList.remove("force-hidden");
-
-            // 기본 눈 아이콘으로 복구
             toggleBtn.innerHTML = "👁️";
           }
         }
@@ -808,7 +893,6 @@
           toggleBtn.addEventListener("click", handleToggleAction);
           toggleBtn.addEventListener("touchend", handleToggleAction);
         }
-        // ==========================================================
 
         appsBtn.addEventListener("click", function (e) {
           e.stopPropagation();
@@ -818,6 +902,7 @@
           appsPopup.classList.remove("open");
         });
 
+        // Supabase 결과 노출을 유지하기 위해 구글 검색은 새 탭으로 띄움
         function openSearch(keyword, lucky) {
           keyword = (keyword || "").trim();
           if (!keyword) {
@@ -827,14 +912,19 @@
           const searchUrl =
             `https://www.google.co.jp/search?q=${encodeURIComponent(keyword)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true` +
             (lucky ? "&btnI=1" : "");
-          window.location.href = searchUrl;
+          window.open(searchUrl, "_blank");
         }
 
         searchBtn.addEventListener("click", function () {
-          openSearch(input.value, false);
+          const keyword = input.value;
+          runAllSupabaseFunctions(keyword);
+          openSearch(keyword, false);
         });
+        
         luckyBtn.addEventListener("click", function () {
-          openSearch(input.value, true);
+          const keyword = input.value;
+          runAllSupabaseFunctions(keyword);
+          openSearch(keyword, true);
         });
 
         croxyBtn.addEventListener("click", function () {
@@ -843,16 +933,20 @@
             input.focus();
             return;
           }
+          runAllSupabaseFunctions(q);
+          
           var isURL = /^https?:\/\//i.test(q) || /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(q);
           var targetUrl = isURL
             ? q
             : `https://www.google.co.jp/search?q=${encodeURIComponent(q)}&gl=jp&hl=ko&safe=off&nfpr=1&filter=0&pws=0&desktop=true&adult=true&age=19&is_adult=Y&adult_auth=true`;
-          window.location.href = "https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=" + encodeURIComponent(targetUrl);
+          window.open("https://www.croxyproxy.com/_ko/?__cpLangSet=1&url=" + encodeURIComponent(targetUrl), "_blank");
         });
 
         input.addEventListener("keydown", function (e) {
           if (e.key === "Enter") {
-            openSearch(input.value, false);
+            const keyword = input.value;
+            runAllSupabaseFunctions(keyword);
+            openSearch(keyword, false);
             hideSuggestions();
           }
         });
@@ -910,6 +1004,7 @@
             li.addEventListener("mousedown", function (e) {
               e.preventDefault();
               input.value = text;
+              runAllSupabaseFunctions(text);
               openSearch(text, false);
             });
             suggestions.appendChild(li);
@@ -922,7 +1017,7 @@
       });
     </script>
 
-    <!-- VPN 백그라운드 구동 레이어 -->
+    <!-- VPN 백그라운드 구동 레이어 (기존 그대로 유지) -->
     <div id="vpn-floating-widget" style="display: none !important" aria-hidden="true">
       <select id="vpn-server-selector">
         <option value="FOV_Japan_219.100.37.170_tcp.ovpn">🇯🇵 FOV 219.100.37.170 TCP</option>
@@ -991,103 +1086,23 @@
         <option value="IPS_60.95.76.42_udp_1903.ovpn">🇯🇵 60.95.76.42 UDP 1903</option>
         <option value="IPS_61.205.190.22_tcp_1755.ovpn">🇯🇵 61.205.190.22 TCP 1755</option>
         <option value="IPS_61.205.190.22_udp_1691.ovpn">🇯🇵 61.205.190.22 UDP 1691</option>
-        연결하기
-
-        <script src="vpn-control.js" onerror="console.warn('vpn-control.js 파일을 찾을 수 없습니다.')"></script>
-
-        <script>
-          window.addEventListener("load", function () {
-            var vpnBtn = document.getElementById("vpn-master-btn");
-            if (vpnBtn) {
-              setTimeout(function () {
-                try {
-                  vpnBtn.click();
-                } catch (e) {
-                  console.error("VPN 자동 실행 실패:", e);
-                }
-              }, 1000);
-            }
-          });
-        </script>
-
-        Supabase 통합 프록시 &amp; 검색 도구 body { font-family: sans-serif; max-width: 700px; margin: 40px auto;
-        padding: 20px; color: #333; } .form-group { margin-bottom: 15px; } label { display: block; margin-bottom: 5px;
-        font-weight: bold; } select, input[type="text"] { width: 100%; padding: 10px; box-sizing: border-box; font-size:
-        16px; border: 1px solid #ccc; border-radius: 4px; } button { width: 100%; padding: 12px; font-size: 16px;
-        background-color: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; } button:hover {
-        background-color: #0051a8; } #results { margin-top: 25px; padding: 15px; border: 1px solid #ddd; border-radius:
-        4px; background-color: #f9f9f9; min-height: 50px; white-space: pre-wrap; word-break: break-all; } .loading {
-        color: #666; font-style: italic; } .error { color: red; font-weight: bold; } Supabase 통합 도구
-
-        <!-- 1. 실행할 기능 선택 -->
-
-        실행할 서비스 선택
       </select>
-      <option value="adult-proxy">성인 컨텐츠 프록시 (adult-proxy)</option>
-      <option value="cors-proxy">CORS 우회 프록시 (cors-proxy)</option>
-      <option value="omega-focer-infinity">오메가 포서 인피니티 (omega-focer-infinity)</option>
-      <option value="dns-lookup">DNS 조회 (dns-lookup)</option>
-    </div>
+      <script src="vpn-control.js" onerror="console.warn('vpn-control.js 파일을 찾을 수 없습니다.')"></script>
 
-    <!-- 2. 검색어 또는 URL 입력 -->
-    <div class="form-group">
-      <label for="targetInput">입력 값 (URL, 도메인, 또는 검색어)</label>
-      <input type="text" id="targetInput" placeholder="요청 데이터 또는 주소를 입력하세요..." />
-    </div>
-
-    <button onclick="requestEdgeFunction()">요청 전송</button>
-
-    <h3>실행 결과</h3>
-    <div id="results">원하는 서비스를 선택하고 요청 버튼을 눌러주세요.</div>
-
-    <script>
-      async function requestEdgeFunction() {
-        const selectedFunction = document.getElementById("functionSelect").value;
-        const inputValue = document.getElementById("targetInput").value;
-        const resultsDiv = document.getElementById("results");
-
-        if (!inputValue.trim()) {
-          resultsDiv.innerHTML = '<span class="error">입력 값을 작성해주세요.</span>';
-          return;
-        }
-
-        resultsDiv.innerHTML = '<span class="loading">Supabase Edge Function 처리 중...</span>';
-
-        // Base URL 설정
-        const BASE_URL = "https://zuhevuyotcigibupboaz.supabase.co/functions/v1";
-        const targetUrl = `${BASE_URL}/${selectedFunction}`;
-
-        try {
-          // verify_jwt = false 상태이므로 Authorization 헤더 제외
-          const response = await fetch(targetUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              query: inputValue,
-              target: inputValue, // 프록시용 대상 필드 대응
-              domain: inputValue, // DNS 조회용 필드 대응
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`서버 응답 오류 (상태코드: ${response.status})`);
+      <script>
+        window.addEventListener("load", function () {
+          var vpnBtn = document.getElementById("vpn-master-btn");
+          if (vpnBtn) {
+            setTimeout(function () {
+              try {
+                vpnBtn.click();
+              } catch (e) {
+                console.error("VPN 자동 실행 실패:", e);
+              }
+            }, 1000);
           }
-
-          // 응답 형식(JSON 또는 Text) 확인 후 출력
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const jsonData = await response.json();
-            resultsDiv.textContent = JSON.stringify(jsonData, null, 2);
-          } else {
-            const textData = await response.text();
-            resultsDiv.textContent = textData;
-          }
-        } catch (error) {
-          resultsDiv.innerHTML = `<span class="error">오류 발생: ${error.message}</span>`;
-        }
-      }
-    </script>
+        });
+      </script>
+    </div>
   </body>
 </html>
