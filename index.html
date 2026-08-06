@@ -29,8 +29,271 @@
     <meta name="color-scheme" content="dark" />
     <meta name="MobileOptimized" content="1359" />
 
-    <script src="https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser-9bhrqx-9bhrqx-7493-20260803@gh-pages/vr_360_enhanced%20patch.js"></script>
-    
+ <title>360 VR Enhanced Browser & Player</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; }
+        #ui-layer { position: fixed; top: 20px; left: 20px; z-index: 100000; color: white; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; pointer-events: none; }
+        h1 { margin: 0 0 10px 0; font-size: 18px; color: #00ff00; }
+        p { margin: 5px 0; font-size: 14px; }
+        #video-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        video { max-width: 80%; border: 2px solid #333; }
+    </style>
+</head>
+<body>
+
+<div id="ui-layer">
+    <h1>🥽 360 VR Enhanced</h1>
+    <p>• 기기: <span id="device-info">감지 중...</span></p>
+    <p>• 자이로: <span id="gyro-status">대기 중</span></p>
+    <p>• 조작: 터치/마우스 드래그, 컨트롤러 스틱</p>
+</div>
+
+<div id="video-container">
+    <!-- 샘플 영상 (사용자가 실제 브라우징 시에는 해당 사이트의 비디오가 자동 매핑됨) -->
+    <video id="sample-video" crossorigin="anonymous" loop muted playsinline>
+        <source src="https://threejs.org/examples/textures/pano.webm" type="video/webm">
+        <source src="https://threejs.org/examples/textures/pano.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<script>
+/**
+ * 360 VR Browser & Video Player with Oculus Eye Tracking & Controller Support
+ * Supports: Oculus Quest (Eye Tracking + Controllers), Mobile (Touch), Desktop (Mouse)
+ */
+
+(function() {
+    if (window.__VR_360_ENHANCED__) return;
+    window.__VR_360_ENHANCED__ = true;
+
+    console.log("🥽 360 VR Enhanced Patch Loading...");
+
+    // UI Update Helper
+    const updateUI = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = text;
+    };
+
+    // Load Three.js
+    const loadThreeJS = () => {
+        return new Promise((resolve) => {
+            if (window.THREE) {
+                resolve();
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+            script.onload = resolve;
+            document.head.appendChild(script);
+        });
+    };
+
+    // VR State Management
+    const vrState = {
+        isActive: false,
+        mode: 'desktop',
+        scene: null,
+        camera: null,
+        renderer: null,
+        sphere: null,
+        videoElement: null,
+        rotation: { lon: 0, lat: 0 },
+        isUserInteracting: false,
+        pointerStart: { x: 0, y: 0 },
+        xrSession: null,
+        eyeTracking: null
+    };
+
+    // Detect Device Type
+    const detectDevice = () => {
+        const ua = navigator.userAgent.toLowerCase();
+        if (ua.includes('oculus') || ua.includes('quest')) {
+            vrState.mode = 'oculus';
+            updateUI('device-info', 'Oculus Quest');
+        } else if (ua.includes('mobile') || ua.includes('android')) {
+            vrState.mode = 'mobile';
+            updateUI('device-info', 'Android Mobile');
+        } else {
+            vrState.mode = 'desktop';
+            updateUI('device-info', 'Desktop PC');
+        }
+    };
+
+    // Initialize WebXR for Oculus
+    const initWebXR = async () => {
+        if (!navigator.xr) return;
+        try {
+            const supported = await navigator.xr.isSessionSupported('immersive-vr');
+            if (supported) {
+                const vrBtn = document.createElement('button');
+                vrBtn.innerHTML = '🥽 ENTER VR';
+                vrBtn.style.cssText = `
+                    position: fixed; bottom: 70px; right: 20px; z-index: 99999;
+                    padding: 12px 20px; background: rgba(0,0,0,0.8); color: white;
+                    border: 2px solid #00ff00; border-radius: 8px; font-weight: bold;
+                    cursor: pointer; font-size: 14px;
+                `;
+                vrBtn.onclick = async () => {
+                    try {
+                        vrState.xrSession = await navigator.xr.requestSession('immersive-vr', {
+                            requiredFeatures: ['local'],
+                            optionalFeatures: ['eye-tracking', 'dom-overlay'],
+                            domOverlay: { root: document.body }
+                        });
+                        vrBtn.innerHTML = '🥽 EXIT VR';
+                        vrBtn.onclick = () => vrState.xrSession.end();
+                    } catch (e) { console.error(e); }
+                };
+                document.body.appendChild(vrBtn);
+            }
+        } catch (e) { console.warn(e); }
+    };
+
+    // Initialize 360 View
+    const init360View = async () => {
+        await loadThreeJS();
+
+        vrState.scene = new THREE.Scene();
+        vrState.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        vrState.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        vrState.renderer.setSize(window.innerWidth, window.innerHeight);
+        vrState.renderer.setPixelRatio(window.devicePixelRatio);
+        vrState.renderer.xr.enabled = true;
+        document.body.appendChild(vrState.renderer.domElement);
+
+        Object.assign(vrState.renderer.domElement.style, {
+            position: 'fixed', top: '0', left: '0', zIndex: '99998',
+            width: '100%', height: '100%', display: 'none'
+        });
+
+        const geometry = new THREE.SphereGeometry(500, 60, 40);
+        geometry.scale(-1, 1, 1);
+
+        vrState.videoElement = document.querySelector('video');
+        const texture = new THREE.VideoTexture(vrState.videoElement);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        vrState.sphere = new THREE.Mesh(geometry, material);
+        vrState.scene.add(vrState.sphere);
+
+        vrState.camera.position.set(0, 0, 0.1);
+
+        setupInputHandlers();
+        setupGyroscope();
+        animate();
+        createVRButton();
+        await initWebXR();
+    };
+
+    // Setup Gyroscope
+    const setupGyroscope = () => {
+        if (window.DeviceOrientationEvent) {
+            updateUI('gyro-status', '활성화 가능');
+            const handleOrientation = (event) => {
+                if (!vrState.isActive || vrState.isUserInteracting) return;
+                let lon, lat;
+                if (window.orientation === 90 || window.orientation === -90) {
+                    lon = event.alpha + event.beta;
+                    lat = (window.orientation === 90) ? event.gamma : -event.gamma;
+                } else {
+                    lon = event.alpha;
+                    lat = event.beta - 90;
+                }
+                if (lon !== undefined && lat !== undefined) {
+                    vrState.rotation.lon = lon;
+                    vrState.rotation.lat = lat;
+                    updateUI('gyro-status', '작동 중');
+                }
+            };
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+    };
+
+    // Setup Input Handlers
+    const setupInputHandlers = () => {
+        const onPointerDown = (e) => {
+            vrState.isUserInteracting = true;
+            vrState.pointerStart.x = e.clientX || e.touches?.[0]?.clientX || 0;
+            vrState.pointerStart.y = e.clientY || e.touches?.[0]?.clientY || 0;
+            if (vrState.videoElement) vrState.videoElement.play();
+        };
+        const onPointerMove = (e) => {
+            if (!vrState.isUserInteracting) return;
+            const x = e.clientX || e.touches?.[0]?.clientX || 0;
+            const y = e.clientY || e.touches?.[0]?.clientY || 0;
+            vrState.rotation.lon += (vrState.pointerStart.x - x) * 0.1;
+            vrState.rotation.lat += (y - vrState.pointerStart.y) * 0.1;
+            vrState.pointerStart.x = x;
+            vrState.pointerStart.y = y;
+        };
+        const onPointerUp = () => vrState.isUserInteracting = false;
+
+        document.addEventListener('mousedown', onPointerDown);
+        document.addEventListener('mousemove', onPointerMove);
+        document.addEventListener('mouseup', onPointerUp);
+        document.addEventListener('touchstart', onPointerDown);
+        document.addEventListener('touchmove', onPointerMove);
+        document.addEventListener('touchend', onPointerUp);
+
+        const gamepadLoop = () => {
+            const gps = navigator.getGamepads();
+            for (let gp of gps) {
+                if (gp && gp.axes.length >= 4) {
+                    vrState.rotation.lon += gp.axes[2] * 2;
+                    vrState.rotation.lat += gp.axes[3] * 2;
+                }
+            }
+            requestAnimationFrame(gamepadLoop);
+        };
+        gamepadLoop();
+    };
+
+    // Create VR Toggle Button
+    const createVRButton = () => {
+        const btn = document.createElement('button');
+        btn.innerHTML = '🔄 360 VIEW';
+        btn.style.cssText = `
+            position: fixed; bottom: 20px; right: 20px; z-index: 99999;
+            padding: 12px 20px; background: rgba(0,0,0,0.8); color: white;
+            border: 2px solid #00ff00; border-radius: 8px; font-weight: bold;
+            cursor: pointer; font-size: 14px;
+        `;
+        btn.onclick = () => {
+            vrState.isActive = !vrState.isActive;
+            vrState.renderer.domElement.style.display = vrState.isActive ? 'block' : 'none';
+            btn.innerHTML = vrState.isActive ? '❌ EXIT 360' : '🔄 360 VIEW';
+            if (vrState.isActive && vrState.videoElement) vrState.videoElement.play();
+        };
+        document.body.appendChild(btn);
+    };
+
+    const animate = () => {
+        requestAnimationFrame(animate);
+        vrState.rotation.lat = Math.max(-85, Math.min(85, vrState.rotation.lat));
+        const phi = THREE.MathUtils.degToRad(90 - vrState.rotation.lat);
+        const theta = THREE.MathUtils.degToRad(vrState.rotation.lon);
+        const target = new THREE.Vector3(
+            500 * Math.sin(phi) * Math.cos(theta),
+            500 * Math.cos(phi),
+            500 * Math.sin(phi) * Math.sin(theta)
+        );
+        vrState.camera.lookAt(target);
+        vrState.renderer.render(vrState.scene, vrState.camera);
+    };
+
+    window.addEventListener('resize', () => {
+        if (vrState.camera && vrState.renderer) {
+            vrState.camera.aspect = window.innerWidth / window.innerHeight;
+            vrState.camera.updateProjectionMatrix();
+            vrState.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    });
+
+    detectDevice();
+    init360View().catch(console.error);
+})();
+</script>
+
         <title>360도 가상 공간 변환기</title>
     <style>
         body, html {
