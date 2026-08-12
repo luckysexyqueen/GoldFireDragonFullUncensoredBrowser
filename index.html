@@ -1,28 +1,33 @@
-<!DOCTYPE html><html lang="ko"><head>
-    <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
     <title>골드파이어드래곤브라우저 360 XR &amp; HDR (Soft - Full Bypass Edition)</title>
 
     <!-- 메타 태그 모음 -->
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="nosnippet, noarchive">
-    <meta name="toolbar" content="true">
-    <meta name="full-color-rgb-ultra-hdr" content="true">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <meta name="desktop-landscape" content="width=1500, height=900, dpi=135">
-    <meta name="desktop-portrait" content="width=900, height=1500, dpi=135">
-    <meta name="mobile-landscape" content="width=1500, height=900, dpi=135">
-    <meta name="mobile-portrait" content="width=900, height=1500, dpi=135">
-    <meta name="DESKTOPMODE" content="force true">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="geo.region" content="JP">
-    <meta name="geo.country" content="JP">
-    <meta name="geo.placename" content="Tokyo">
-    <meta name="HandheldFriendly" content="true">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="x-rim-auto-match" content="none">
-    <meta name="color-scheme" content="dark">
-    <meta name="MobileOptimized" content="1359">
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="nosnippet, noarchive" />
+    <meta name="toolbar" content="true" />
+    <meta name="full-color-rgb-ultra-hdr" content="true" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover"
+    />
+    <meta name="desktop-landscape" content="width=1500, height=900, dpi=135" />
+    <meta name="desktop-portrait" content="width=900, height=1500, dpi=135" />
+    <meta name="mobile-landscape" content="width=1500, height=900, dpi=135" />
+    <meta name="mobile-portrait" content="width=900, height=1500, dpi=135" />
+    <meta name="DESKTOPMODE" content="force true" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="geo.region" content="JP" />
+    <meta name="geo.country" content="JP" />
+    <meta name="geo.placename" content="Tokyo" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="x-rim-auto-match" content="none" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="MobileOptimized" content="1359" />
 
     <script>
       /**
@@ -825,13 +830,16 @@
     
     
     <!-- Tampermonkey 우회 유저 스크립트 모음 -->
-    <script src=" https:="" update.greasyfork.org="" scripts="" 506528="" thisav%20automatic%20login.user.js"=""></script>
+    <script src="https://update.greasyfork.org/scripts/506528/ThisAV%20Automatic%20login.user.js"></script>
     <script src="https://update.sleazyfork.org/scripts/533961/NoAge%20PornHub.user.js"></script>
 
     <!-- 외부 스타일 및 아이콘 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GoldFireDragonFullUnCensoredGoogleProxyInAndroidWebBrowserAppHomePage@refs/heads/codespace-super-robot-xrwp9jp647v62v74v/fonts/gamefont.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GoldFireDragonFullUnCensoredGoogleProxyInAndroidWebBrowserAppHomePage@refs/heads/codespace-super-robot-xrwp9jp647v62v74v/fonts/gamefont.css"
+    />
 
     <script>
       // 글로벌 조이스틱 데이터 정의
@@ -864,205 +872,6 @@
       });
     </script>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-      @font-face {
-        font-family: "acutehoney";
-        src: url("https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser/fonts/a%ED%81%90%ED%8B%B0%ED%97%88%EB%8B%88.woff")
-          format("woff");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-      *, *::before, *::after {
-        font-family: "acutehoney", sans-serif !important;
-      }
-      body, html {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          background-color: #000;
-      }
-      #container {
-          width: 100%;
-          height: 100%;
-      }
-      /* 로딩 표시 */
-      #loading {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          color: #FFD700;
-          font-size: 20px;
-          z-index: 100;
-      }
-    </style>
-
-
-    <div id="loading">이미지를 불러오는 중...</div>
-    <div id="container"></div>
-
-    <script>
-        let camera, scene, renderer, sphere;
-        let isUserInteracting = false;
-        let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
-        let lon = 0, onPointerDownLon = 0;
-        let lat = 0, onPointerDownLat = 0;
-        let phi = 0, theta = 0;
-
-        const container = document.getElementById('container');
-        const imageUrl = "https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser-9bhrqx-9bhrqx-7493-20260803@gh-pages/images/GoldFireDragonBrowser_home_page.jpg?raw=true";
-
-        init();
-        animate();
-
-        function init() {
-            scene = new THREE.Scene();
-
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-            camera.target = new THREE.Vector3(0, 0, 0);
-
-            const geometry = new THREE.SphereGeometry(500, 128, 64);
-            geometry.scale(-1, 1, 1);
-
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = imageUrl;
-            
-            img.onload = function() {
-                document.getElementById('loading').style.display = 'none';
-                
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // 원본 크기
-                const w = img.width;
-                const h = img.height;
-                canvas.width = w;
-                canvas.height = h;
-                
-                // 1. 기본 이미지 그리기
-                ctx.drawImage(img, 0, 0);
-                
-                // 2. 심리스 블렌딩 (어긋남 및 검은 선 해결)
-                // 이미지의 왼쪽 끝부분(5%)을 복사하여 오른쪽 끝부분에 그라데이션으로 섞음
-                const blendWidth = Math.floor(w * 0.05); 
-                
-                // 왼쪽 조각 가져오기
-                const leftSlice = document.createElement('canvas');
-                leftSlice.width = blendWidth;
-                leftSlice.height = h;
-                leftSlice.getContext('2d').drawImage(img, 0, 0, blendWidth, h, 0, 0, blendWidth, h);
-                
-                // 오른쪽 끝에 그라데이션 블렌딩
-                // 픽셀 단위로 루프를 돌며 부드럽게 알파 블렌딩 (노이즈 방지)
-                for (let x = 0; x < blendWidth; x++) {
-                    const alpha = x / blendWidth;
-                    ctx.globalAlpha = alpha;
-                    // 오른쪽 끝 부분에 왼쪽 조각을 겹쳐 그림
-                    ctx.drawImage(leftSlice, x, 0, 1, h, (w - blendWidth) + x, 0, 1, h);
-                }
-                
-                ctx.globalAlpha = 1.0;
-
-                // 3. 텍스처 생성 및 적용
-                const texture = new THREE.CanvasTexture(canvas);
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.minFilter = THREE.LinearFilter;
-                texture.magFilter = THREE.LinearFilter;
-                texture.anisotropy = 16; // 선명도 향상
-                
-                const material = new THREE.MeshBasicMaterial({ map: texture });
-                sphere = new THREE.Mesh(geometry, material);
-                scene.add(sphere);
-            };
-
-            img.onerror = function() {
-                document.getElementById('loading').innerText = "이미지 로딩 실패. URL을 확인해주세요.";
-            };
-
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            container.style.touchAction = 'none';
-            container.addEventListener('pointerdown', onPointerDown);
-            document.addEventListener('wheel', onDocumentMouseWheel, { passive: false });
-            window.addEventListener('resize', onWindowResize);
-            document.addEventListener('keydown', onKeyDown);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function onPointerDown(event) {
-            if (event.isPrimary === false) return;
-            isUserInteracting = true;
-            onPointerDownMouseX = event.clientX;
-            onPointerDownMouseY = event.clientY;
-            onPointerDownLon = lon;
-            onPointerDownLat = lat;
-            document.addEventListener('pointermove', onPointerMove);
-            document.addEventListener('pointerup', onPointerUp);
-        }
-
-        function onPointerMove(event) {
-            if (event.isPrimary === false) return;
-            if (isUserInteracting === true) {
-                lon = (onPointerDownMouseX - event.clientX) * 0.1 + onPointerDownLon;
-                lat = (event.clientY - onPointerDownMouseY) * 0.1 + onPointerDownLat;
-            }
-        }
-
-        function onPointerUp() {
-            isUserInteracting = false;
-            document.removeEventListener('pointermove', onPointerMove);
-            document.removeEventListener('pointerup', onPointerUp);
-        }
-
-        function onDocumentMouseWheel(event) {
-            const fov = camera.fov + event.deltaY * 0.05;
-            camera.fov = THREE.MathUtils.clamp(fov, 10, 100);
-            camera.updateProjectionMatrix();
-            event.preventDefault();
-        }
-
-        function onKeyDown(event) {
-            const step = 2;
-            switch(event.key) {
-                case 'ArrowLeft': case 'a': lon -= step; break;
-                case 'ArrowRight': case 'd': lon += step; break;
-                case 'ArrowUp': case 'w': lat += step; break;
-                case 'ArrowDown': case 's': lat -= step; break;
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            update();
-        }
-
-        function update() {
-            lat = Math.max(-85, Math.min(85, lat));
-            phi = THREE.MathUtils.degToRad(90 - lat);
-            theta = THREE.MathUtils.degToRad(lon);
-
-            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-            camera.target.y = 500 * Math.cos(phi);
-            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-
-            camera.lookAt(camera.target);
-            renderer.render(scene, camera);
-        }
-    </script>
-    
     <!-- ======= HDR 프레임워크 ======= -->
     <style id="forced-hdr-core-style">
       html,
@@ -1348,9 +1157,210 @@
       }
     </style>
 
+    <!-- 360도 파노라마 VR 씬 -->
+    <div id="xr-bg-container">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
+<script>
+(function() {
+    let camera, scene, renderer, backgroundSphere, characterLayer;
+    let isUserInteracting = false;
+    let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
+    let lon = 180, onPointerDownLon = 180; 
+    let lat = 0, onPointerDownLat = 0;
+    let phi = 0, theta = 0;
+    
+    let moveForward = 0, moveRight = 0;
+    const moveSpeed = 1.3;
+    const velocity = new THREE.Vector3();
+
+    const initVR = () => {
+        const container = document.getElementById('xr-bg-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+        camera.position.set(0, 0, 0.1);
+
+        const imageUrl = "https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser-9bhrqx-9bhrqx-7493-20260803@gh-pages/images/GoldFireDragonBrowser_home_page.jpg?raw=true";
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = imageUrl;
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const w = img.width, h = img.height;
+            canvas.width = w; canvas.height = h;
+            ctx.drawImage(img, 0, 0);
+            
+            // 심리스 블렌딩 (배경용)
+            const blendWidth = Math.floor(w * 0.05);
+            const leftSlice = document.createElement('canvas');
+            leftSlice.width = blendWidth; leftSlice.height = h;
+            leftSlice.getContext('2d').drawImage(img, 0, 0, blendWidth, h, 0, 0, blendWidth, h);
+            for (let x = 0; x < blendWidth; x++) {
+                ctx.globalAlpha = x / blendWidth;
+                ctx.drawImage(leftSlice, x, 0, 1, h, (w - blendWidth) + x, 0, 1, h);
+            }
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.minFilter = THREE.LinearFilter;
+
+            // [1. 배경 레이어 - 큰 구체]
+            const bgGeo = new THREE.SphereGeometry(1000, 64, 32);
+            bgGeo.scale(-1, 1, 1);
+            const bgMat = new THREE.MeshBasicMaterial({ map: texture });
+            backgroundSphere = new THREE.Mesh(bgGeo, bgMat);
+            scene.add(backgroundSphere);
+
+            // [2. 캐릭터 입체 레이어 - 물리적으로 앞에 배치]
+            // 캐릭터 부분만 선명하게 남기고 나머지는 투명하게 처리한 캔버스 생성
+            const charCanvas = document.createElement('canvas');
+            const charCtx = charCanvas.getContext('2d');
+            charCanvas.width = w; charCanvas.height = h;
+            
+            // 중앙(왕좌/캐릭터) 영역만 남기는 마스크 적용
+            charCtx.drawImage(img, 0, 0);
+            const charW = w * 0.4; // 캐릭터 가로 범위
+            const charH = h * 0.6; // 캐릭터 세로 범위
+            const charX = (w - charW) / 2;
+            const charY = (h - charH) / 2;
+            
+            // 캔버스 데이터 조작으로 캐릭터 외 영역 투명화 (쉐이더 없이 3D 구현 핵심)
+            const imageData = charCtx.getImageData(0, 0, w, h);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const x = (i / 4) % w;
+                const y = Math.floor((i / 4) / w);
+                // 중앙 영역 밖은 투명하게 (부드러운 경계)
+                const dist = Math.sqrt(Math.pow((x - w/2)/(charW/2), 2) + Math.pow((y - h/2)/(charH/2), 2));
+                if (dist > 1.0) {
+                    data[i+3] = 0;
+                } else if (dist > 0.8) {
+                    data[i+3] = (1.0 - (dist - 0.8) / 0.2) * 255;
+                }
+            }
+            charCtx.putImageData(imageData, 0, 0);
+            
+            const charTexture = new THREE.CanvasTexture(charCanvas);
+            charTexture.wrapS = THREE.RepeatWrapping;
+            
+            // 배경보다 살짝 작은 구체로 캐릭터를 카메라 쪽으로 당김 (물리적 3D)
+            const charGeo = new THREE.SphereGeometry(900, 64, 32);
+            charGeo.scale(-1, 1, 1);
+            const charMat = new THREE.MeshBasicMaterial({ 
+                map: charTexture, 
+                transparent: true,
+                side: THREE.BackSide
+            });
+            characterLayer = new THREE.Mesh(charGeo, charMat);
+            scene.add(characterLayer);
+        };
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.zIndex = '1';
+        container.appendChild(renderer.domElement);
+
+        const joystickZone = document.getElementById('joystick-zone');
+        if (joystickZone) {
+            const manager = nipplejs.create({
+                zone: joystickZone,
+                mode: 'static',
+                position: { left: '50%', top: '50%' },
+                color: '#FFD700',
+                size: 110
+            });
+            manager.on('move', (evt, data) => {
+                if (data.vector) {
+                    moveForward = data.vector.y;
+                    moveRight = data.vector.x;
+                }
+            });
+            manager.on('end', () => {
+                moveForward = 0; moveRight = 0;
+            });
+        }
+
+        const onPointerDown = (e) => {
+            if (e.target.closest('#joystick-zone') || e.target.closest('.nipple') || e.target.closest('#ui-layer')) return;
+            isUserInteracting = true;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            onPointerDownMouseX = clientX;
+            onPointerDownMouseY = clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+        };
+
+        const onPointerMove = (e) => {
+            if (!isUserInteracting) return;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            lon = (onPointerDownMouseX - clientX) * 0.15 + onPointerDownLon;
+            lat = (clientY - onPointerDownMouseY) * 0.15 + onPointerDownLat;
+        };
+
+        const onPointerUp = () => { isUserInteracting = false; };
+
+        container.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        container.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('touchend', onPointerUp);
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            lat = Math.max(-85, Math.min(85, lat));
+            phi = THREE.MathUtils.degToRad(90 - lat);
+            theta = THREE.MathUtils.degToRad(lon); 
+
+            const target = new THREE.Vector3();
+            target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            target.y = 500 * Math.cos(phi);
+            target.z = 500 * Math.sin(phi) * Math.sin(theta);
+            camera.lookAt(camera.position.x + target.x, camera.position.y + target.y, camera.position.z + target.z);
+
+            if (moveForward !== 0 || moveRight !== 0) {
+                const forward = new THREE.Vector3();
+                camera.getWorldDirection(forward);
+                forward.y = 0; forward.normalize();
+                const right = new THREE.Vector3();
+                right.crossVectors(forward, camera.up).normalize();
+                
+                const newPos = camera.position.clone();
+                newPos.addScaledVector(forward, moveForward * moveSpeed);
+                newPos.addScaledVector(right, moveRight * moveSpeed);
+                
+                if (newPos.length() < 700) { 
+                    camera.position.copy(newPos);
+                }
+            }
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    };
+    window.addEventListener('DOMContentLoaded', initVR);
+})();
+</script>
+    </div>
+
     <!-- UI 오버레이 레이어 -->
     <div id="ui-layer">
-      <header class="flex justify-between items-center px-4 py-3 gap-2 z-50 flex-wrap clickable" style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent)">
+      <header
+        class="flex justify-between items-center px-4 py-3 gap-2 z-50 flex-wrap clickable"
+        style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent)"
+      >
         <div class="flex items-center gap-2 flex-wrap">
           <div class="japan-wifi">🇯🇵 Japan WiFi IP</div>
           <div class="no-login-badge">🔓 무로그인 전체우회 모드</div>
@@ -1361,19 +1371,39 @@
         </div>
 
         <div class="flex items-center gap-2 flex-wrap justify-end">
-          <a href="https://mail.google.com" target="_blank" class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap">
+          <a
+            href="https://mail.google.com"
+            target="_blank"
+            class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap"
+          >
             Gmail
           </a>
-          <a href="https://images.google.co.jp" target="_blank" class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap">
+          <a
+            href="https://images.google.co.jp"
+            target="_blank"
+            class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap"
+          >
             이미지
           </a>
-          <a href="https://news.google.com" target="_blank" class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap">
+          <a
+            href="https://news.google.com"
+            target="_blank"
+            class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap"
+          >
             뉴스
           </a>
-          <a href="https://maps.google.co.jp" target="_blank" class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap">
+          <a
+            href="https://maps.google.co.jp"
+            target="_blank"
+            class="text-sm text-purple-300 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition whitespace-nowrap"
+          >
             지도
           </a>
-          <button id="apps-btn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition" title="앱 목록">
+          <button
+            id="apps-btn"
+            class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition"
+            title="앱 목록"
+          >
             <i class="fa-solid fa-grip text-purple-300 text-lg"></i>
           </button>
           <button id="toggle-main-btn" type="button" title="검색창 및 로고 숨기기 / 보이기">👁️</button>
@@ -1425,27 +1455,55 @@
       <!-- 로고와 검색창 영역 -->
       <main id="main-content" class="flex-1 flex flex-col items-center justify-center px-4 py-10">
         <div class="mb-8 text-center select-none clickable">
-          <img src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@a81b2430450dcf18c49813c55be06c6ee0ad256f/images/GoldFireDragonBrowser_logo_removebg_preview.png" style="
+          <img
+            src="https://cdn.jsdelivr.net/gh/luckysexysuccubusqueen135age/GFD@a81b2430450dcf18c49813c55be06c6ee0ad256f/images/GoldFireDragonBrowser_logo_removebg_preview.png"
+            style="
               width: clamp(90px, 16vw, 160px);
               display: block;
               height: auto;
               filter: none !important;
               image-rendering: auto !important;
-            " class="mx-auto drop-shadow-lg" draggable="false" alt="GoldFireDragon Logo">
+            "
+            class="mx-auto drop-shadow-lg"
+            draggable="false"
+            alt="GoldFireDragon Logo"
+          />
           <p class="text-purple-300 text-sm mt-1">로그인 없이 자유로운 360° XR 무제한 우회 브라우저</p>
         </div>
 
         <div class="w-full max-w-[680px] relative clickable">
           <div class="search-bar flex items-center px-5 py-3">
             <i class="fa-solid fa-magnifying-glass text-lg text-purple-400 mr-4 flex-shrink-0"></i>
-            <input id="search-input" type="text" class="flex-1 bg-transparent outline-none text-base md:text-lg placeholder:text-purple-400 text-purple-100 min-w-0" placeholder="검색어 또는 URL 주소를 입력하세요 (무로그인 우회 지원)" autocomplete="off" aria-label="검색어 입력">
-            <button id="clear-btn" class="hidden text-lg text-purple-300 hover:text-white mr-3 flex-shrink-0" title="지우기" aria-label="검색어 지우기">
+            <input
+              id="search-input"
+              type="text"
+              class="flex-1 bg-transparent outline-none text-base md:text-lg placeholder:text-purple-400 text-purple-100 min-w-0"
+              placeholder="검색어 또는 URL 주소를 입력하세요 (무로그인 우회 지원)"
+              autocomplete="off"
+              aria-label="검색어 입력"
+            />
+            <button
+              id="clear-btn"
+              class="hidden text-lg text-purple-300 hover:text-white mr-3 flex-shrink-0"
+              title="지우기"
+              aria-label="검색어 지우기"
+            >
               ✕
             </button>
-            <button id="voice-btn" class="text-lg text-purple-400 hover:text-white mr-3 flex-shrink-0 transition" title="음성 검색" aria-label="음성 검색">
+            <button
+              id="voice-btn"
+              class="text-lg text-purple-400 hover:text-white mr-3 flex-shrink-0 transition"
+              title="음성 검색"
+              aria-label="음성 검색"
+            >
               <i class="fa-solid fa-microphone"></i>
             </button>
-            <button id="lens-btn" class="text-lg text-purple-400 hover:text-white flex-shrink-0 transition" title="Google Lens 이미지 검색" aria-label="Google Lens 이미지 검색">
+            <button
+              id="lens-btn"
+              class="text-lg text-purple-400 hover:text-white flex-shrink-0 transition"
+              title="Google Lens 이미지 검색"
+              aria-label="Google Lens 이미지 검색"
+            >
               <i class="fa-solid fa-camera"></i>
             </button>
           </div>
@@ -1454,49 +1512,91 @@
 
         <!-- 검색 및 우회 접속 버튼 그룹 -->
         <div class="flex justify-center gap-3 mt-6 flex-wrap clickable">
-          <button id="search-btn" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 active:scale-95 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-purple-900/50">
+          <button
+            id="search-btn"
+            class="px-6 py-3 bg-purple-600 hover:bg-purple-700 active:scale-95 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-purple-900/50"
+          >
             GoldFireDragon 검색
           </button>
-          <button id="lucky-btn" class="px-6 py-3 bg-transparent border border-purple-400 hover:bg-purple-500/20 active:scale-95 rounded-xl text-sm font-semibold transition-all">
+          <button
+            id="lucky-btn"
+            class="px-6 py-3 bg-transparent border border-purple-400 hover:bg-purple-500/20 active:scale-95 rounded-xl text-sm font-semibold transition-all"
+          >
             I'm Feeling Lucky
           </button>
-          <button id="croxy-btn" class="px-6 py-3 bg-transparent border border-emerald-500 hover:bg-emerald-500/20 active:scale-95 rounded-xl text-sm font-semibold text-emerald-300 hover:text-emerald-100 transition-all flex items-center gap-2">
+          <button
+            id="croxy-btn"
+            class="px-6 py-3 bg-transparent border border-emerald-500 hover:bg-emerald-500/20 active:scale-95 rounded-xl text-sm font-semibold text-emerald-300 hover:text-emerald-100 transition-all flex items-center gap-2"
+          >
             <i class="fa-solid fa-shield-halved"></i>
             CroxyProxy 우회
           </button>
-          <button id="bypass-btn" class="px-6 py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 active:scale-95 rounded-xl text-sm font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-red-900/50">
+          <button
+            id="bypass-btn"
+            class="px-6 py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 active:scale-95 rounded-xl text-sm font-semibold text-white transition-all flex items-center gap-2 shadow-lg shadow-red-900/50"
+          >
             <i class="fa-solid fa-lock-open"></i>
             🔥 무로그인 강력 우회
           </button>
         </div>
 
         <nav class="mt-12 flex gap-5 flex-wrap justify-center clickable" aria-label="빠른 링크">
-          <a href="https://mail.google.com" target="_blank" class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group">
-            <div class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition">
+          <a
+            href="https://mail.google.com"
+            target="_blank"
+            class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition"
+            >
               <i class="fa-solid fa-envelope text-xl"></i>
             </div>
             <span class="text-xs">Gmail</span>
           </a>
-          <a href="https://maps.google.co.jp" target="_blank" class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group">
-            <div class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition">
+          <a
+            href="https://maps.google.co.jp"
+            target="_blank"
+            class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition"
+            >
               <i class="fa-solid fa-map-location-dot text-xl"></i>
             </div>
             <span class="text-xs">지도</span>
           </a>
-          <a href="https://news.google.com" target="_blank" class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group">
-            <div class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition">
+          <a
+            href="https://news.google.com"
+            target="_blank"
+            class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition"
+            >
               <i class="fa-solid fa-newspaper text-xl"></i>
             </div>
             <span class="text-xs">뉴스</span>
           </a>
-          <a href="https://www.youtube.com" target="_blank" class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group">
-            <div class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition">
+          <a
+            href="https://www.youtube.com"
+            target="_blank"
+            class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition"
+            >
               <i class="fa-brands fa-youtube text-xl"></i>
             </div>
             <span class="text-xs">YouTube</span>
           </a>
-          <a href="https://translate.google.com" target="_blank" class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group">
-            <div class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition">
+          <a
+            href="https://translate.google.com"
+            target="_blank"
+            class="flex flex-col items-center gap-2 text-purple-300 hover:text-white transition group"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-white/10 group-hover:bg-purple-600/40 flex items-center justify-center transition"
+            >
               <i class="fa-solid fa-language text-xl"></i>
             </div>
             <span class="text-xs">번역</span>
@@ -1505,7 +1605,10 @@
       </main>
 
       <!-- Supabase 통합 검색 결과 패널 -->
-      <div id="supabase-results-panel" class="hidden absolute right-6 top-24 w-96 max-h-[70vh] bg-black/85 border border-purple-500 rounded-xl p-4 overflow-y-auto z-[600] shadow-[0_0_30px_rgba(168,85,247,0.5)] backdrop-blur-md flex-col">
+      <div
+        id="supabase-results-panel"
+        class="hidden absolute right-6 top-24 w-96 max-h-[70vh] bg-black/85 border border-purple-500 rounded-xl p-4 overflow-y-auto z-[600] shadow-[0_0_30px_rgba(168,85,247,0.5)] backdrop-blur-md flex-col"
+      >
         <div class="flex justify-between items-center mb-3 border-b border-purple-800 pb-2">
           <h3 class="text-purple-300 text-sm font-bold">
             <i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>
@@ -1513,11 +1616,18 @@
           </h3>
           <button id="close-results-btn" class="text-purple-400 hover:text-white text-2xl leading-none">×</button>
         </div>
-        <div id="supabase-results" class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1 overflow-y-auto"></div>
+        <div
+          id="supabase-results"
+          class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1 overflow-y-auto"
+        ></div>
       </div>
 
       <!-- 하단 푸터 -->
-      <footer id="main-footer" class="py-5 text-center text-xs text-purple-500 border-t border-purple-900/30 clickable" style="background: rgba(0, 0, 0, 0.65)">
+      <footer
+        id="main-footer"
+        class="py-5 text-center text-xs text-purple-500 border-t border-purple-900/30 clickable"
+        style="background: rgba(0, 0, 0, 0.65)"
+      >
         <nav class="flex justify-center gap-6 mb-2" aria-label="하단 링크">
           <a href="javascript:void(0)" class="hover:text-purple-300 transition">개인정보처리방침</a>
           <a href="javascript:void(0)" class="hover:text-purple-300 transition">서비스 약관</a>
@@ -2599,6 +2709,6 @@
       </script>
     </div>
   <script>window.onload=function(){var d=document.createElement("div");d.id="appLoadFinished";document.body.appendChild(d);};</script>
+</body>
 
-
-</body></html>
+</html>
