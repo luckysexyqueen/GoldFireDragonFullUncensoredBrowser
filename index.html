@@ -872,6 +872,205 @@
       });
     </script>
 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "acutehoney";
+        src: url("https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser/fonts/a%ED%81%90%ED%8B%B0%ED%97%88%EB%8B%88.woff")
+          format("woff");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      *, *::before, *::after {
+        font-family: "acutehoney", sans-serif !important;
+      }
+      body, html {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background-color: #000;
+      }
+      #container {
+          width: 100%;
+          height: 100%;
+      }
+      /* 로딩 표시 */
+      #loading {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #FFD700;
+          font-size: 20px;
+          z-index: 100;
+      }
+    </style>
+</head>
+<body>
+    <div id="loading">이미지를 불러오는 중...</div>
+    <div id="container"></div>
+
+    <script>
+        let camera, scene, renderer, sphere;
+        let isUserInteracting = false;
+        let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
+        let lon = 0, onPointerDownLon = 0;
+        let lat = 0, onPointerDownLat = 0;
+        let phi = 0, theta = 0;
+
+        const container = document.getElementById('container');
+        const imageUrl = "https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser-9bhrqx-9bhrqx-7493-20260803@gh-pages/images/GoldFireDragonBrowser_home_page.jpg?raw=true";
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+            camera.target = new THREE.Vector3(0, 0, 0);
+
+            const geometry = new THREE.SphereGeometry(500, 128, 64);
+            geometry.scale(-1, 1, 1);
+
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = imageUrl;
+            
+            img.onload = function() {
+                document.getElementById('loading').style.display = 'none';
+                
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 원본 크기
+                const w = img.width;
+                const h = img.height;
+                canvas.width = w;
+                canvas.height = h;
+                
+                // 1. 기본 이미지 그리기
+                ctx.drawImage(img, 0, 0);
+                
+                // 2. 심리스 블렌딩 (어긋남 및 검은 선 해결)
+                // 이미지의 왼쪽 끝부분(5%)을 복사하여 오른쪽 끝부분에 그라데이션으로 섞음
+                const blendWidth = Math.floor(w * 0.05); 
+                
+                // 왼쪽 조각 가져오기
+                const leftSlice = document.createElement('canvas');
+                leftSlice.width = blendWidth;
+                leftSlice.height = h;
+                leftSlice.getContext('2d').drawImage(img, 0, 0, blendWidth, h, 0, 0, blendWidth, h);
+                
+                // 오른쪽 끝에 그라데이션 블렌딩
+                // 픽셀 단위로 루프를 돌며 부드럽게 알파 블렌딩 (노이즈 방지)
+                for (let x = 0; x < blendWidth; x++) {
+                    const alpha = x / blendWidth;
+                    ctx.globalAlpha = alpha;
+                    // 오른쪽 끝 부분에 왼쪽 조각을 겹쳐 그림
+                    ctx.drawImage(leftSlice, x, 0, 1, h, (w - blendWidth) + x, 0, 1, h);
+                }
+                
+                ctx.globalAlpha = 1.0;
+
+                // 3. 텍스처 생성 및 적용
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                texture.anisotropy = 16; // 선명도 향상
+                
+                const material = new THREE.MeshBasicMaterial({ map: texture });
+                sphere = new THREE.Mesh(geometry, material);
+                scene.add(sphere);
+            };
+
+            img.onerror = function() {
+                document.getElementById('loading').innerText = "이미지 로딩 실패. URL을 확인해주세요.";
+            };
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            container.style.touchAction = 'none';
+            container.addEventListener('pointerdown', onPointerDown);
+            document.addEventListener('wheel', onDocumentMouseWheel, { passive: false });
+            window.addEventListener('resize', onWindowResize);
+            document.addEventListener('keydown', onKeyDown);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onPointerDown(event) {
+            if (event.isPrimary === false) return;
+            isUserInteracting = true;
+            onPointerDownMouseX = event.clientX;
+            onPointerDownMouseY = event.clientY;
+            onPointerDownLon = lon;
+            onPointerDownLat = lat;
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('pointerup', onPointerUp);
+        }
+
+        function onPointerMove(event) {
+            if (event.isPrimary === false) return;
+            if (isUserInteracting === true) {
+                lon = (onPointerDownMouseX - event.clientX) * 0.1 + onPointerDownLon;
+                lat = (event.clientY - onPointerDownMouseY) * 0.1 + onPointerDownLat;
+            }
+        }
+
+        function onPointerUp() {
+            isUserInteracting = false;
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerup', onPointerUp);
+        }
+
+        function onDocumentMouseWheel(event) {
+            const fov = camera.fov + event.deltaY * 0.05;
+            camera.fov = THREE.MathUtils.clamp(fov, 10, 100);
+            camera.updateProjectionMatrix();
+            event.preventDefault();
+        }
+
+        function onKeyDown(event) {
+            const step = 2;
+            switch(event.key) {
+                case 'ArrowLeft': case 'a': lon -= step; break;
+                case 'ArrowRight': case 'd': lon += step; break;
+                case 'ArrowUp': case 'w': lat += step; break;
+                case 'ArrowDown': case 's': lat -= step; break;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+        }
+
+        function update() {
+            lat = Math.max(-85, Math.min(85, lat));
+            phi = THREE.MathUtils.degToRad(90 - lat);
+            theta = THREE.MathUtils.degToRad(lon);
+
+            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = 500 * Math.cos(phi);
+            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(camera.target);
+            renderer.render(scene, camera);
+        }
+    </script>
+    
     <!-- ======= HDR 프레임워크 ======= -->
     <style id="forced-hdr-core-style">
       html,
@@ -1156,29 +1355,6 @@
         font-family: "acutehoney", sans-serif !important;
       }
     </style>
-
-    <!-- 360도 파노라마 VR 씬 -->
-    <div id="xr-bg-container">
-      <a-scene embedded="" vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: false">
-        <a-assets>
-          <img
-            id="bg-360"
-            src="https://cdn.jsdelivr.net/gh/luckysexyqueen/GoldFireDragonUnCensoredBrowser-9bhrqx-9bhrqx-7493-20260803@gh-pages/images/GoldFireDragonBrowser_home_page.jpg?raw=true"
-          />
-        </a-assets>
-        <a-sky src="#bg-360" rotation="0 -90 0"></a-sky>
-
-        <!-- 카메라 Rig -->
-        <a-entity id="camera-rig" position="0 1.6 0" joystick-controls="speed: 0.15">
-          <a-camera
-            id="main-camera"
-            position="0 0 0"
-            look-controls="pointerLockEnabled: false; touchEnabled: true; magicWindowTrackingEnabled: false"
-            wasd-controls="acceleration: 60"
-          ></a-camera>
-        </a-entity>
-      </a-scene>
-    </div>
 
     <!-- UI 오버레이 레이어 -->
     <div id="ui-layer">
